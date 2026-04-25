@@ -17,11 +17,10 @@ function SectionLabel({ text }: { text: string }) {
     <p
       style={{
         fontFamily: "var(--font-mono)",
-        fontSize: "9px",
+        fontSize: "10px",
         textTransform: "uppercase",
         letterSpacing: "0.14em",
-        color: "var(--carbon)",
-        opacity: 0.38,
+        color: "#1A3EFF",
         margin: "0 0 24px",
       }}
     >
@@ -238,10 +237,10 @@ export default function Home() {
           <p
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "9px",
+              fontSize: "10px",
               textTransform: "uppercase",
               letterSpacing: "0.14em",
-              opacity: 0.38,
+              color: "#1A3EFF",
               marginBottom: "32px",
             }}
           >

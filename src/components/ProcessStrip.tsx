@@ -102,10 +102,10 @@ export default function ProcessStrip() {
         <p
           style={{
             fontFamily: "var(--font-mono)",
-            fontSize: "9px",
+            fontSize: "10px",
             textTransform: "uppercase",
             letterSpacing: "0.13em",
-            color: "#aaa",
+            color: "#1A3EFF",
             textAlign: "center",
             marginBottom: "32px",
           }}

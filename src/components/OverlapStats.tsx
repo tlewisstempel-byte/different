@@ -52,10 +52,10 @@ export default function OverlapStats() {
 
   const labelStyle: React.CSSProperties = {
     fontFamily: "var(--font-mono)",
-    fontSize: "9px",
+    fontSize: "10px",
     textTransform: "uppercase",
     letterSpacing: "0.13em",
-    color: "#aaa",
+    color: "#1A3EFF",
     marginBottom: "16px",
   };
 

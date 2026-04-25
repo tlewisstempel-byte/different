@@ -11,11 +11,10 @@ function SectionLabel({ text, color }: { text: string; color?: string }) {
     <p
       style={{
         fontFamily: "var(--font-mono)",
-        fontSize: "9px",
+        fontSize: "10px",
         textTransform: "uppercase",
         letterSpacing: "0.14em",
-        color: color || "var(--carbon)",
-        opacity: color ? 1 : 0.38,
+        color: color || "#1A3EFF",
         marginBottom: "10px",
       }}
     >

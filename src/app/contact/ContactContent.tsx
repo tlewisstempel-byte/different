@@ -72,11 +72,10 @@ export default function ContactContent() {
             <p
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: "9px",
+                fontSize: "10px",
                 textTransform: "uppercase",
                 letterSpacing: "0.14em",
-                color: "var(--carbon)",
-                opacity: 0.38,
+                color: "#1A3EFF",
                 marginBottom: "16px",
               }}
             >
@@ -141,10 +140,10 @@ export default function ContactContent() {
                   <p
                     style={{
                       fontFamily: "var(--font-mono)",
-                      fontSize: "9px",
+                      fontSize: "10px",
                       textTransform: "uppercase",
                       letterSpacing: "0.12em",
-                      opacity: 0.38,
+                      color: "#1A3EFF",
                       marginBottom: "8px",
                     }}
                   >
