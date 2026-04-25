@@ -30,7 +30,12 @@ export default function Home() {
       <section
         style={{
           background: "var(--bright-white)",
-          padding: "100px 0 80px",
+          padding: "80px 0",
+          minHeight: "100vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
           textAlign: "center",
         }}
       >
