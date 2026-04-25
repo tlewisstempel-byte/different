@@ -1,0 +1,182 @@
+@import "tailwindcss";
+
+:root {
+  --carbon:       #0A0A0A;
+  --bright-white: #F5F4F0;
+  --stone:        #E8E2D9;
+  --klein-blue:   #1A3EFF;
+  --signal-red:   #FF2D55;
+
+  --font-display: var(--font-grotesk);
+  --font-ui:      var(--font-mono);
+
+  --transition:   200ms ease-out;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bright-white);
+  color: var(--carbon);
+  font-family: var(--font-grotesk), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .hero-wordmark {
+    font-size: 52px !important;
+  }
+  .responsive-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+  .responsive-grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+  .responsive-grid-2 {
+    grid-template-columns: 1fr !important;
+    text-align: center;
+  }
+  .responsive-grid-cards {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+.btn-filled {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  background: var(--carbon);
+  color: var(--bright-white);
+  border: none;
+  padding: 12px 28px;
+  transition: background 200ms ease-out, color 200ms ease-out;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-filled:hover {
+  background: #333;
+}
+
+.btn-outline {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  background: transparent;
+  color: var(--carbon);
+  border: 1px solid var(--carbon);
+  padding: 12px 28px;
+  transition: background 200ms ease-out, color 200ms ease-out;
+  display: inline-block;
+  text-decoration: none;
+}
+.btn-outline:hover {
+  background: var(--carbon);
+  color: var(--bright-white);
+}
+
+.package-card {
+  background: #ffffff;
+  border: 1px solid rgba(10,10,10,0.13);
+  border-radius: 10px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  transition: transform 150ms ease-out, border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.package-card:hover {
+  transform: scale(1.025);
+  border-color: #1A3EFF;
+  box-shadow: 0 0 0 1px #1A3EFF;
+  z-index: 4;
+  position: relative;
+}
+
+.card-btn-outline {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  background: transparent;
+  color: var(--carbon);
+  border: 1px solid var(--carbon);
+  border-radius: 6px;
+  padding: 11px;
+  width: 100%;
+  transition: background 200ms ease-out, color 200ms ease-out;
+}
+.card-btn-outline:hover {
+  background: var(--carbon);
+  color: var(--bright-white);
+}
+
+.card-btn-filled {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  background: var(--carbon);
+  color: var(--bright-white);
+  border: none;
+  border-radius: 6px;
+  padding: 11px;
+  width: 100%;
+  transition: background 200ms ease-out;
+}
+.card-btn-filled:hover {
+  background: #333;
+}
+
+.control-btn {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  border: 1px solid rgba(10,10,10,0.20);
+  background: transparent;
+  padding: 5px 13px;
+  color: var(--carbon);
+  transition: background 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out;
+}
+.control-btn.active {
+  background: var(--carbon);
+  color: var(--bright-white);
+  border-color: var(--carbon);
+}
+
+.cta-link {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: var(--carbon);
+  text-decoration: underline;
+  transition: opacity 200ms ease-out;
+}
+.cta-link:hover {
+  opacity: 0.6;
+}
