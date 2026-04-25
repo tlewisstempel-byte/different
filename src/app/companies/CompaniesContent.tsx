@@ -60,9 +60,9 @@ export default function CompaniesContent() {
               maxWidth: "520px",
             }}
           >
-            All three Different packages include audience deduplication and full
+            All three different packages include audience deduplication and full
             campaign execution. Want more? Then think{" "}
-            <strong>Different</strong> or <strong>Pro.</strong>
+            <strong>different</strong> or <strong>pro.</strong>
           </p>
         </Container>
       </section>
@@ -172,7 +172,7 @@ export default function CompaniesContent() {
                   marginBottom: "14px",
                 }}
               >
-                Core, plus proof it worked.
+                <strong>core</strong>, plus proof it worked.
               </p>
               <p
                 style={{
@@ -250,7 +250,7 @@ export default function CompaniesContent() {
                   marginBottom: "14px",
                 }}
               >
-                Different, plus native ads.
+                <strong>different</strong>, plus native ads.
               </p>
               <p
                 style={{
@@ -507,7 +507,7 @@ export default function CompaniesContent() {
               {
                 num: "01",
                 title: "Pick your package",
-                body: "Choose Core, Different, or Pro.",
+                body: <>Choose <strong>core</strong>, <strong>different</strong>, or <strong>pro</strong>.</>,
               },
               {
                 num: "02",
@@ -522,7 +522,7 @@ export default function CompaniesContent() {
               {
                 num: "04",
                 title: "You see what worked",
-                body: "Performance data at close. Insight report on Different and Pro.",
+                body: <>Performance data at close. Insight report on <strong>different</strong> and <strong>pro</strong>.</>,
               },
             ].map(({ num, title, body }) => (
               <div key={num}>
@@ -591,11 +591,11 @@ export default function CompaniesContent() {
               },
               {
                 title: "Proof the campaign moved people.",
-                body: "Different and Pro tiers both offer brand lift surveys at campaign close. We measure product understanding and sentiment shift in the actual audience, not vanity metrics.",
+                body: <><strong>different</strong> and <strong>pro</strong> tiers both offer brand lift surveys at campaign close. We measure product understanding and sentiment shift in the actual audience, not vanity metrics.</>,
               },
               {
                 title: "A new way of distributing creatives.",
-                body: "On Pro campaigns, we produce the creative. Creators distribute it in their own voice, through their own channels - reaching paid media scale without it looking like paid media.",
+                body: <>On <strong>pro</strong> campaigns, we produce the creative. Creators distribute it in their own voice, through their own channels - reaching paid media scale without it looking like paid media.</>,
               },
               {
                 title: "Built to last beyond the campaign.",
