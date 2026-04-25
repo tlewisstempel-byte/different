@@ -7,7 +7,7 @@ import ProcessStrip from "@/components/ProcessStrip";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Different — Web3 & AI Influencer Marketing",
+  title: "Different | Web3 & AI Influencer Marketing",
   description:
     "Influencer campaigns built from audience to evidence. Verified reach, full-spectrum execution, and brand lift measurement for frontier tech companies.",
 };

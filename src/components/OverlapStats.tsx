@@ -28,7 +28,7 @@ export default function OverlapStats() {
   const [leftVal, setLeftVal] = useState(0);
   const [rightVal, setRightVal] = useState(60);
   const [prefixVisible, setPrefixVisible] = useState(false);
-  const [animated, setAnimated] = useState(false);
+  const [inView, setInView] = useState(false);
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -36,8 +36,8 @@ export default function OverlapStats() {
     if (!el) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !animated) {
-          setAnimated(true);
+        if (entries[0].isIntersecting && !inView) {
+          setInView(true);
           animateCounter(0, 60, 1600, setLeftVal);
           animateCounter(60, 30, 1600, setRightVal, () =>
             setPrefixVisible(true)
@@ -48,7 +48,7 @@ export default function OverlapStats() {
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, [animated]);
+  }, [inView]);
 
   const labelStyle: React.CSSProperties = {
     fontFamily: "var(--font-mono)",
@@ -76,6 +76,9 @@ export default function OverlapStats() {
         background: "#F5F4F0",
         padding: "80px 0",
         borderTop: "1px solid rgba(10,10,10,0.08)",
+        opacity: inView ? 1 : 0,
+        transform: inView ? "translateY(0)" : "translateY(16px)",
+        transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
       }}
     >
       <Container>
