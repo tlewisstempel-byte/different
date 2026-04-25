@@ -1,6 +1,8 @@
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Container from "@/components/Container";
+import OverlapStats from "@/components/OverlapStats";
+import ProcessStrip from "@/components/ProcessStrip";
 import Link from "next/link";
 
 function SectionLabel({ text }: { text: string }) {
@@ -226,6 +228,9 @@ export default function Home() {
           </div>
         </Container>
       </section>
+
+      <OverlapStats />
+      <ProcessStrip />
 
       {/* Dual CTA */}
       <section
