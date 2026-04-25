@@ -15,9 +15,9 @@ const spaceMono = Space_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Different — a Compound agency",
+  title: "Different — Web3 & AI Influencer Marketing",
   description:
-    "Tech-native influencers. Frontier tech companies. We connect the two.",
+    "Influencer campaigns built from audience to evidence. Verified reach, full-spectrum execution, and brand lift measurement for frontier tech companies.",
 };
 
 export default function RootLayout({

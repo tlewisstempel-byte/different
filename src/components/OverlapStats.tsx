@@ -72,7 +72,11 @@ export default function OverlapStats() {
   return (
     <section
       ref={ref}
-      style={{ background: "#F5F4F0", padding: "80px 0" }}
+      style={{
+        background: "#F5F4F0",
+        padding: "80px 0",
+        borderTop: "1px solid rgba(10,10,10,0.08)",
+      }}
     >
       <Container>
         <div

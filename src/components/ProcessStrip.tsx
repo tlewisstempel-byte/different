@@ -91,7 +91,11 @@ export default function ProcessStrip() {
   return (
     <section
       ref={ref}
-      style={{ background: "#F5F4F0", padding: "72px 0 80px" }}
+      style={{
+        background: "#F5F4F0",
+        padding: "72px 0 80px",
+        borderTop: "1px solid rgba(10,10,10,0.08)",
+      }}
     >
       <Container>
         {/* Section label */}

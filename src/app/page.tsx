@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import Container from "@/components/Container";
 import OverlapStats from "@/components/OverlapStats";
 import ProcessStrip from "@/components/ProcessStrip";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Different — Web3 & AI Influencer Marketing",
+  description:
+    "Influencer campaigns built from audience to evidence. Verified reach, full-spectrum execution, and brand lift measurement for frontier tech companies.",
+};
 
 function SectionLabel({ text }: { text: string }) {
   return (
@@ -28,16 +35,11 @@ export default function Home() {
     <>
       <Nav />
 
-      {/* Hero */}
+      {/* 1. Hero */}
       <section
         style={{
           background: "var(--bright-white)",
-          padding: "80px 0",
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          padding: "100px 0 48px",
           textAlign: "center",
         }}
       >
@@ -75,7 +77,7 @@ export default function Home() {
               marginBottom: "16px",
             }}
           >
-            built for what&apos;s being built.
+            campaigns from audience to evidence
           </p>
 
           <p
@@ -124,51 +126,13 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* A Different Approach */}
-      <section
-        style={{
-          background: "var(--bright-white)",
-          padding: "64px 0",
-          borderTop: "1px solid rgba(10,10,10,0.08)",
-          textAlign: "center",
-        }}
-      >
-        <Container>
-          <div style={{ maxWidth: "640px", margin: "0 auto" }}>
-            <SectionLabel text="A Different Approach" />
-            <p
-              style={{
-                fontFamily: "var(--font-grotesk)",
-                fontWeight: 400,
-                fontSize: "16px",
-                lineHeight: 1.65,
-                color: "var(--carbon)",
-                marginBottom: "20px",
-              }}
-            >
-              Web3 and AI influencer agencies rely on a cabal of influencers
-              with the same audiences, limited conversion, and CPMs that
-              don&apos;t reflect reality. We do things differently.
-            </p>
-            <p
-              style={{
-                fontFamily: "var(--font-grotesk)",
-                fontWeight: 400,
-                fontSize: "16px",
-                lineHeight: 1.65,
-                color: "var(--carbon)",
-              }}
-            >
-              We select influencers with active, growing audiences, nurture
-              relationships with them, and push new-look campaigns combining the
-              best of traditional influencer marketing with the fast-moving
-              world of web3 creator metas.
-            </p>
-          </div>
-        </Container>
-      </section>
+      {/* 2. Overlap Stat Counter */}
+      <OverlapStats />
 
-      {/* Why Different */}
+      {/* 3. A-E Process Strip */}
+      <ProcessStrip />
+
+      {/* 4. Why Different */}
       <section
         style={{
           background: "var(--bright-white)",
@@ -229,10 +193,39 @@ export default function Home() {
         </Container>
       </section>
 
-      <OverlapStats />
-      <ProcessStrip />
+      {/* 5. A Different Approach — single paragraph, centred */}
+      <section
+        style={{
+          background: "var(--bright-white)",
+          padding: "64px 0",
+          borderTop: "1px solid rgba(10,10,10,0.08)",
+          textAlign: "center",
+        }}
+      >
+        <Container>
+          <div style={{ maxWidth: "640px", margin: "0 auto" }}>
+            <SectionLabel text="A Different Approach" />
+            <p
+              style={{
+                fontFamily: "var(--font-grotesk)",
+                fontWeight: 400,
+                fontSize: "16px",
+                lineHeight: 1.65,
+                color: "var(--carbon)",
+              }}
+            >
+              Web3 and AI influencer agencies rely on a cabal of influencers
+              with the same audiences, limited conversion, and CPMs that
+              don&apos;t reflect reality. We select influencers with active,
+              growing audiences, nurture relationships with them, and push
+              campaigns that combine the best of traditional influencer
+              marketing with the fast-moving world of web3 creator metas.
+            </p>
+          </div>
+        </Container>
+      </section>
 
-      {/* Dual CTA */}
+      {/* 6. Dual CTA */}
       <section
         style={{
           background: "var(--bright-white)",

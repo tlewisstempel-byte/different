@@ -136,6 +136,8 @@ button {
   border-radius: 6px;
   padding: 11px;
   width: 100%;
+  display: block;
+  text-align: center;
   transition: background 200ms ease-out, color 200ms ease-out;
 }
 .card-btn-outline:hover {
@@ -154,6 +156,8 @@ button {
   border-radius: 6px;
   padding: 11px;
   width: 100%;
+  display: block;
+  text-align: center;
   transition: background 200ms ease-out;
 }
 .card-btn-filled:hover {
