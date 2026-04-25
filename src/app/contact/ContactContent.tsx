@@ -73,6 +73,7 @@ export default function ContactContent() {
               style={{
                 fontFamily: "var(--font-mono)",
                 fontSize: "10px",
+                fontWeight: 700,
                 textTransform: "uppercase",
                 letterSpacing: "0.14em",
                 color: "#1A3EFF",
@@ -141,6 +142,7 @@ export default function ContactContent() {
                     style={{
                       fontFamily: "var(--font-mono)",
                       fontSize: "10px",
+                      fontWeight: 700,
                       textTransform: "uppercase",
                       letterSpacing: "0.12em",
                       color: "#1A3EFF",

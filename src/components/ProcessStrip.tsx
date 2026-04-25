@@ -103,6 +103,7 @@ export default function ProcessStrip() {
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "10px",
+            fontWeight: 700,
             textTransform: "uppercase",
             letterSpacing: "0.13em",
             color: "#1A3EFF",

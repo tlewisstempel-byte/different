@@ -12,6 +12,7 @@ function SectionLabel({ text, color }: { text: string; color?: string }) {
       style={{
         fontFamily: "var(--font-mono)",
         fontSize: "10px",
+        fontWeight: 700,
         textTransform: "uppercase",
         letterSpacing: "0.14em",
         color: color || "#1A3EFF",
