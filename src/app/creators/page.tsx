@@ -2,6 +2,7 @@
 
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import Container from "@/components/Container";
 import { useState } from "react";
 
 export default function Creators() {
@@ -53,10 +54,11 @@ export default function Creators() {
           minHeight: "80vh",
           display: "flex",
           alignItems: "center",
-          padding: "80px 24px",
+          padding: "80px 0",
         }}
       >
-        <div style={{ maxWidth: "480px", margin: "0 auto", width: "100%" }}>
+        <Container>
+        <div style={{ maxWidth: "480px" }}>
           <h1
             style={{
               fontFamily: "var(--font-grotesk)",
@@ -151,6 +153,7 @@ export default function Creators() {
             </form>
           )}
         </div>
+        </Container>
       </main>
 
       <Footer />

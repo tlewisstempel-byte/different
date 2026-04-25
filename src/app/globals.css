@@ -36,7 +36,16 @@ button {
   cursor: pointer;
 }
 
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
 @media (max-width: 768px) {
+  .container {
+    padding: 0 24px;
+  }
   .desktop-only {
     display: none !important;
   }
