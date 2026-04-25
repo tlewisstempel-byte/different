@@ -97,16 +97,29 @@ export default function ContactContent() {
             </h1>
 
             {submitted ? (
-              <p
-                style={{
-                  fontFamily: "var(--font-grotesk)",
-                  fontWeight: 400,
-                  fontSize: "16px",
-                  opacity: 0.7,
-                }}
-              >
-                Done. We&apos;ll be in touch.
-              </p>
+              <div style={{ textAlign: "center" }}>
+                <p
+                  style={{
+                    fontFamily: "var(--font-grotesk)",
+                    fontWeight: 700,
+                    fontSize: "32px",
+                    color: "#0A0A0A",
+                  }}
+                >
+                  thank you for thinking different
+                </p>
+                <p
+                  style={{
+                    fontFamily: "var(--font-grotesk)",
+                    fontWeight: 400,
+                    fontSize: "15px",
+                    color: "#888",
+                    marginTop: "12px",
+                  }}
+                >
+                  We&apos;ll be in touch.
+                </p>
+              </div>
             ) : (
               <form onSubmit={handleSubmit}>
                 <input
