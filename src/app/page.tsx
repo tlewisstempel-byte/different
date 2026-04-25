@@ -73,7 +73,7 @@ export default function Home() {
               marginBottom: "16px",
             }}
           >
-            Built for what&apos;s being built.
+            built for what&apos;s being built.
           </p>
 
           <p
@@ -128,10 +128,11 @@ export default function Home() {
           background: "var(--bright-white)",
           padding: "64px 0",
           borderTop: "1px solid rgba(10,10,10,0.08)",
+          textAlign: "center",
         }}
       >
         <Container>
-          <div style={{ maxWidth: "640px" }}>
+          <div style={{ maxWidth: "640px", margin: "0 auto" }}>
             <SectionLabel text="A Different Approach" />
             <p
               style={{
@@ -171,6 +172,7 @@ export default function Home() {
           background: "var(--bright-white)",
           padding: "64px 0",
           borderTop: "1px solid rgba(10,10,10,0.08)",
+          textAlign: "center",
         }}
       >
         <Container>
@@ -197,7 +199,7 @@ export default function Home() {
                 body: "Creator coordination, briefs, scheduling, reporting. Handled entirely.",
               },
             ].map(({ title, body }) => (
-              <div key={title}>
+              <div key={title} style={{ textAlign: "center" }}>
                 <p
                   style={{
                     fontFamily: "var(--font-grotesk)",

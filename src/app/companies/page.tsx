@@ -242,6 +242,7 @@ export default function Companies() {
                   padding: 0,
                   margin: 0,
                   flex: 1,
+                  minHeight: "120px",
                   marginBottom: "20px",
                 }}
               >
@@ -311,6 +312,7 @@ export default function Companies() {
                   padding: 0,
                   margin: 0,
                   flex: 1,
+                  minHeight: "120px",
                   marginBottom: "20px",
                 }}
               >
@@ -389,6 +391,7 @@ export default function Companies() {
                   padding: 0,
                   margin: 0,
                   flex: 1,
+                  minHeight: "120px",
                   marginBottom: "20px",
                 }}
               >
