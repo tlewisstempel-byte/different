@@ -88,8 +88,8 @@ export default function Home() {
               lineHeight: 1.6,
             }}
           >
-            Tech-native influencers. Frontier tech companies. We connect the
-            two, as neither of you fit the old model.
+            Tech-native influencers and frontier-tech companies don&apos;t fit
+            the old model. Neither do we.
           </p>
 
           <div
