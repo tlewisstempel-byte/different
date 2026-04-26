@@ -193,3 +193,18 @@ button {
 .cta-link:hover {
   opacity: 0.6;
 }
+
+.nav-root {
+  padding: 20px 48px;
+}
+
+@media (max-width: 768px) {
+  .nav-root {
+    padding: 16px 24px;
+  }
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #aaa;
+}
