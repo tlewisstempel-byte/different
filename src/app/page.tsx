@@ -156,7 +156,7 @@ export default function Home() {
                 body: "Audience deduplication on every campaign. The reach you pay for is real.",
               },
               {
-                title: "Proof, not just data.",
+                title: "Actionable insights.",
                 body: "Brand lift surveys measure whether the campaign actually shifted how people think about your product.",
               },
               {
