@@ -326,9 +326,9 @@ export default function CreatorsContent() {
                     </div>
 
                     <div>
-                      <p style={fieldLabelStyle}>Profile URLs</p>
+                      <p style={fieldLabelStyle}>Additional Profile URLs</p>
                       <textarea
-                        placeholder="Paste your best 1–3 links"
+                        placeholder="Add any handles you didn't put above."
                         value={profileUrls}
                         onChange={(e) => setProfileUrls(e.target.value)}
                         rows={3}
