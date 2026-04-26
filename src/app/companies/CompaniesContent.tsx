@@ -56,7 +56,7 @@ export default function CompaniesContent() {
       <section style={{ padding: "4px 0 0" }}>
         <Container>
           <div
-            className="responsive-grid-cards"
+            className="responsive-grid-cards cards-wrapper"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(3, 1fr)",
@@ -64,7 +64,7 @@ export default function CompaniesContent() {
             }}
           >
             {/* Card: Core */}
-            <div className="package-card">
+            <div className="package-card card-core">
               <SectionLabel text="Different Core" />
               <p
                 style={{
@@ -180,7 +180,7 @@ export default function CompaniesContent() {
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className="card-btn-filled">Get Different</Link>
+              <Link href="/contact" className="card-btn-filled card-cta">Get Different</Link>
             </div>
 
             {/* Card: Pro */}

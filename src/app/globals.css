@@ -236,6 +236,21 @@ textarea::placeholder {
   transform: scale(1.04) !important;
 }
 
+/* Deselect Different card when a sibling is hovered */
+.cards-wrapper:has(.card-core:hover) .card-different,
+.cards-wrapper:has(.card-pro:hover) .card-different {
+  border: 1px solid rgba(10, 10, 10, 0.13);
+  box-shadow: none;
+  transform: scale(1);
+}
+
+.cards-wrapper:has(.card-core:hover) .card-different .card-cta,
+.cards-wrapper:has(.card-pro:hover) .card-different .card-cta {
+  background: transparent;
+  color: #0A0A0A;
+  border: 1px solid #0A0A0A;
+}
+
 /* Pro card hover */
 .card-pro:hover {
   transform: scale(1.04) !important;
