@@ -24,21 +24,6 @@ function SectionLabel({ text, color }: { text: string; color?: string }) {
   );
 }
 
-function FeatureDot() {
-  return (
-    <span
-      style={{
-        width: "6px",
-        height: "6px",
-        borderRadius: "50%",
-        background: "var(--carbon)",
-        flexShrink: 0,
-        marginTop: "4px",
-        display: "inline-block",
-      }}
-    />
-  );
-}
 
 export default function CompaniesContent() {
   const [showTable, setShowTable] = useState(true);
@@ -115,6 +100,7 @@ export default function CompaniesContent() {
                 $5,000 - $15,000 USD
               </p>
               <ul
+                className="card-features"
                 style={{
                   listStyle: "none",
                   padding: 0,
@@ -129,19 +115,8 @@ export default function CompaniesContent() {
                   { text: "End-to-end campaign service", bold: false },
                   { text: "Performance report", bold: true },
                 ].map(({ text, bold }) => (
-                  <li
-                    key={text}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "9px",
-                      padding: "3px 0",
-                      fontSize: "13px",
-                      fontWeight: bold ? 700 : 400,
-                    }}
-                  >
-                    <FeatureDot />
-                    <span>{text}</span>
+                  <li key={text} style={{ padding: "3px 0", fontSize: "13px", fontWeight: bold ? 700 : 400 }}>
+                    {text}
                   </li>
                 ))}
               </ul>
@@ -185,6 +160,7 @@ export default function CompaniesContent() {
                 $15,000 - $30,000 USD
               </p>
               <ul
+                className="card-features"
                 style={{
                   listStyle: "none",
                   padding: 0,
@@ -199,31 +175,21 @@ export default function CompaniesContent() {
                   { text: "End-to-end campaign service", bold: false },
                   { text: "Brand lift surveys + report", bold: true },
                 ].map(({ text, bold }) => (
-                  <li
-                    key={text}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "9px",
-                      padding: "3px 0",
-                      fontSize: "13px",
-                      fontWeight: bold ? 700 : 400,
-                    }}
-                  >
-                    <FeatureDot />
-                    <span>{text}</span>
+                  <li key={text} style={{ padding: "3px 0", fontSize: "13px", fontWeight: bold ? 700 : 400 }}>
+                    {text}
                   </li>
                 ))}
               </ul>
               <Link href="/contact" className="card-btn-outline">Get Different</Link>
             </div>
 
-            {/* Card: Pro — permanent blue border */}
+            {/* Card: Pro — permanently highlighted */}
             <div
-              className="package-card"
+              className="package-card card-pro"
               style={{
                 border: "1px solid #1A3EFF",
                 boxShadow: "0 0 0 1px #1A3EFF",
+                transform: "scale(1.025)",
               }}
             >
               <SectionLabel text="Different Pro" color="var(--klein-blue)" />
@@ -264,6 +230,7 @@ export default function CompaniesContent() {
                 $30,000 - $50,000+ USD
               </p>
               <ul
+                className="card-features"
                 style={{
                   listStyle: "none",
                   padding: 0,
@@ -279,20 +246,8 @@ export default function CompaniesContent() {
                   { text: "Brand lift surveys + report", bold: false },
                   { text: "Native creator ads", bold: true },
                 ].map(({ text, bold }) => (
-                  <li
-                    key={text}
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      gap: "9px",
-                      padding: "3px 0",
-                      fontSize: "13px",
-                      fontWeight: bold ? 700 : 400,
-                      color: "var(--carbon)",
-                    }}
-                  >
-                    <FeatureDot />
-                    <span>{text}</span>
+                  <li key={text} style={{ padding: "3px 0", fontSize: "13px", fontWeight: bold ? 700 : 400, color: "var(--carbon)" }}>
+                    {text}
                   </li>
                 ))}
               </ul>
@@ -326,14 +281,16 @@ export default function CompaniesContent() {
 
             {/* Comparison Table */}
             {showTable && (
-              <table
-                style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  fontSize: "13px",
-                  textAlign: "left",
-                }}
-              >
+              <div className="comparison-table-wrapper">
+                <table
+                  className="comparison-table"
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: "13px",
+                    textAlign: "left",
+                  }}
+                >
                 <thead>
                   <tr>
                     <th
@@ -435,7 +392,8 @@ export default function CompaniesContent() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
             )}
           </div>
         </Container>
@@ -511,8 +469,8 @@ export default function CompaniesContent() {
               },
               {
                 num: "02",
-                title: "We brief, you approve",
-                body: "Campaign lead assigned within 24 hours.",
+                title: "Frictionless go-live",
+                body: "Tell us what you need. We'll come back within 24 hours with a plan.",
               },
               {
                 num: "03",

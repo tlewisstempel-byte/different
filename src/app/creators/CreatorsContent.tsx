@@ -207,6 +207,7 @@ export default function CreatorsContent() {
             ) : (
               <>
                 <h1
+                  className="page-heading"
                   style={{
                     fontFamily: "var(--font-grotesk)",
                     fontWeight: 700,
@@ -297,7 +298,7 @@ export default function CreatorsContent() {
 
                     <div style={{ marginBottom: "32px" }}>
                       <p style={fieldLabelStyle}>Primary Platform *</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      <div className="pill-group" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                         {PLATFORMS.map((p) => (
                           <SelectButton
                             key={p}
@@ -312,7 +313,7 @@ export default function CreatorsContent() {
 
                     <div style={{ marginBottom: "32px" }}>
                       <p style={fieldLabelStyle}>Additional Platforms</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      <div className="pill-group" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                         {PLATFORMS.filter((p) => p !== primaryPlatform).map((p) => (
                           <SelectButton
                             key={p}
@@ -358,7 +359,7 @@ export default function CreatorsContent() {
 
                     <div style={{ marginBottom: "32px" }}>
                       <p style={fieldLabelStyle}>Primary Audience Location</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      <div className="pill-group" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                         {LOCATIONS.map((l) => (
                           <SelectButton
                             key={l}
@@ -372,7 +373,7 @@ export default function CreatorsContent() {
 
                     <div style={{ marginBottom: "32px" }}>
                       <p style={fieldLabelStyle}>Primary Audience Device</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      <div className="pill-group" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                         {DEVICES.map((d) => (
                           <SelectButton
                             key={d}
@@ -430,7 +431,7 @@ export default function CreatorsContent() {
 
                     <div style={{ marginBottom: "32px" }}>
                       <p style={fieldLabelStyle}>Niche *</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      <div className="pill-group" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                         {NICHES.map((n) => (
                           <SelectButton
                             key={n}
@@ -463,7 +464,7 @@ export default function CreatorsContent() {
 
                     <div style={{ marginBottom: "32px" }}>
                       <p style={fieldLabelStyle}>Worked with Web3 or AI Brands Before?</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                      <div className="pill-group" style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
                         {YES_NO.map((y) => (
                           <SelectButton
                             key={y}

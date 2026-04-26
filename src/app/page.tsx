@@ -5,6 +5,7 @@ import Container from "@/components/Container";
 import OverlapStats from "@/components/OverlapStats";
 import ProcessStrip from "@/components/ProcessStrip";
 import Link from "next/link";
+import ScrollArrow from "@/components/ScrollArrow";
 
 export const metadata: Metadata = {
   title: "Different | Web3 & AI Influencer Marketing",
@@ -36,13 +37,7 @@ export default function Home() {
       <Nav />
 
       {/* 1. Hero */}
-      <section
-        style={{
-          background: "var(--bright-white)",
-          padding: "100px 0 48px",
-          textAlign: "center",
-        }}
-      >
+      <section className="hero">
         <Container>
           <h1
             className="hero-wordmark"
@@ -69,6 +64,7 @@ export default function Home() {
           />
 
           <p
+            className="hero-tagline"
             style={{
               fontFamily: "var(--font-grotesk)",
               fontWeight: 500,
@@ -81,6 +77,7 @@ export default function Home() {
           </p>
 
           <p
+            className="hero-sub"
             style={{
               fontFamily: "var(--font-grotesk)",
               fontWeight: 400,
@@ -96,6 +93,7 @@ export default function Home() {
           </p>
 
           <div
+            className="hero-ctas"
             style={{
               display: "flex",
               gap: "12px",
@@ -124,6 +122,7 @@ export default function Home() {
             a Compound agency
           </p>
         </Container>
+        <ScrollArrow />
       </section>
 
       {/* 2. Overlap Stat Counter */}

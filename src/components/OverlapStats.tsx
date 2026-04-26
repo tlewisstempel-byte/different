@@ -84,6 +84,7 @@ export default function OverlapStats() {
     >
       <Container>
         <div
+          className="stats-inner"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -92,6 +93,7 @@ export default function OverlapStats() {
         >
           {/* Left — Industry Average */}
           <div
+            className="stat-col"
             style={{
               flex: 1,
               minWidth: "240px",
@@ -101,6 +103,7 @@ export default function OverlapStats() {
           >
             <p style={labelStyle}>Industry Average</p>
             <p
+              className="stat-num"
               style={{
                 fontFamily: "var(--font-grotesk)",
                 fontWeight: 700,
@@ -120,6 +123,7 @@ export default function OverlapStats() {
 
           {/* Divider */}
           <div
+            className="stat-divider"
             style={{
               width: "1px",
               background: "rgba(10,10,10,0.08)",
@@ -129,6 +133,7 @@ export default function OverlapStats() {
 
           {/* Right — The Different Promise */}
           <div
+            className="stat-col"
             style={{
               flex: 1,
               minWidth: "240px",
@@ -148,6 +153,7 @@ export default function OverlapStats() {
               }}
             >
               <span
+                className="stat-prefix"
                 style={{
                   fontFamily: "var(--font-grotesk)",
                   fontWeight: 700,
@@ -162,6 +168,7 @@ export default function OverlapStats() {
                 &lt;
               </span>
               <span
+                className="stat-num"
                 style={{
                   fontFamily: "var(--font-grotesk)",
                   fontWeight: 700,
