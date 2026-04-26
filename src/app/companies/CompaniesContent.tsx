@@ -75,7 +75,7 @@ export default function CompaniesContent() {
                   marginBottom: "5px",
                 }}
               >
-                Core
+                core
               </p>
               <p
                 style={{
@@ -135,7 +135,7 @@ export default function CompaniesContent() {
                   marginBottom: "5px",
                 }}
               >
-                Different
+                different
               </p>
               <p
                 style={{
@@ -157,7 +157,7 @@ export default function CompaniesContent() {
                   marginBottom: "16px",
                 }}
               >
-                $15,000 - $30,000 USD
+                $15,000 – $50,000 USD
               </p>
               <ul
                 className="card-features"
@@ -196,7 +196,7 @@ export default function CompaniesContent() {
                   marginBottom: "5px",
                 }}
               >
-                Pro
+                pro
               </p>
               <p
                 style={{
@@ -220,7 +220,7 @@ export default function CompaniesContent() {
                   marginBottom: "16px",
                 }}
               >
-                $30,000 - $50,000+ USD
+                $50,000+ USD
               </p>
               <ul
                 className="card-features"
