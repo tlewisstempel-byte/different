@@ -224,7 +224,19 @@ textarea::placeholder {
   margin-top: 1px;
 }
 
-/* Fix 5: Pro card hover */
+/* Amendment 26: Different card — permanently highlighted */
+.card-different {
+  border-color: #1A3EFF;
+  box-shadow: 0 0 0 1px #1A3EFF;
+  transform: scale(1.025);
+  position: relative;
+  z-index: 1;
+}
+.card-different:hover {
+  transform: scale(1.04) !important;
+}
+
+/* Pro card hover */
 .card-pro:hover {
   transform: scale(1.04) !important;
 }
@@ -281,7 +293,7 @@ textarea::placeholder {
   .hero-tagline { font-size: 20px; }
   .hero-sub { font-size: 14px; max-width: 100%; }
   .hero-ctas { flex-direction: column; align-items: center; gap: 12px; width: 100%; }
-  .card-pro { transform: none !important; }
+  .card-different { transform: none; }
   .comparison-table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .comparison-table { min-width: 560px; }
   .package-buttons { flex-wrap: wrap; gap: 8px; }

@@ -87,7 +87,7 @@ export default function CompaniesContent() {
                   marginBottom: "14px",
                 }}
               >
-                Full execution, verified reach.
+                full execution, verified reach.
               </p>
               <p
                 style={{
@@ -123,8 +123,8 @@ export default function CompaniesContent() {
               <Link href="/contact" className="card-btn-outline">Get Core</Link>
             </div>
 
-            {/* Card: Different */}
-            <div className="package-card">
+            {/* Card: Different — permanently highlighted */}
+            <div className="package-card card-different">
               <SectionLabel text="Different" />
               <p
                 style={{
@@ -180,18 +180,11 @@ export default function CompaniesContent() {
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className="card-btn-outline">Get Different</Link>
+              <Link href="/contact" className="card-btn-filled">Get Different</Link>
             </div>
 
-            {/* Card: Pro — permanently highlighted */}
-            <div
-              className="package-card card-pro"
-              style={{
-                border: "1px solid #1A3EFF",
-                boxShadow: "0 0 0 1px #1A3EFF",
-                transform: "scale(1.025)",
-              }}
-            >
+            {/* Card: Pro */}
+            <div className="package-card card-pro">
               <SectionLabel text="Different Pro" color="var(--klein-blue)" />
               <p
                 style={{
@@ -251,7 +244,7 @@ export default function CompaniesContent() {
                   </li>
                 ))}
               </ul>
-              <Link href="/contact" className="card-btn-filled">Get Pro</Link>
+              <Link href="/contact" className="card-btn-outline">Get Pro</Link>
             </div>
           </div>
 
