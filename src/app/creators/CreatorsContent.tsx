@@ -229,7 +229,7 @@ export default function CreatorsContent() {
                     marginBottom: "48px",
                   }}
                 >
-                  Tell us about your audience.
+                  Tell us about yourself.
                 </p>
 
                 <form onSubmit={handleSubmit} noValidate>
@@ -389,7 +389,7 @@ export default function CreatorsContent() {
                       <p style={fieldLabelStyle}>Sorsa Score</p>
                       <input
                         type="text"
-                        placeholder="e.g. 72"
+                        placeholder="e.g. 550"
                         value={sorsaScore}
                         onChange={(e) => setSorsaScore(e.target.value)}
                         style={inputStyle}
