@@ -160,8 +160,8 @@ export default function OverlapStats() {
                   fontSize: "36px",
                   color: "var(--carbon)",
                   position: "relative",
-                  top: "-10px",
-                  opacity: prefixVisible ? 0.6 : 0,
+                  top: "0",
+                  opacity: prefixVisible ? 1 : 0,
                   transition: "opacity 300ms ease-out",
                 }}
               >
