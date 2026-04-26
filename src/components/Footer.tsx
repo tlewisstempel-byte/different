@@ -19,10 +19,11 @@ export default function Footer() {
           fontFamily: "var(--font-grotesk)",
           fontWeight: 700,
           fontSize: "14px",
+          letterSpacing: "-0.03em",
           margin: 0,
         }}
       >
-        DIFFERENT
+        different
       </p>
       <p
         style={{

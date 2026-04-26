@@ -17,7 +17,7 @@ const nodes = [
   {
     id: "C",
     title: "Creator coordination",
-    desc: "Briefing, scheduling and creator management handled end-to-end",
+    desc: "Briefing, scheduling and management. Handled.",
   },
   {
     id: "D",
@@ -33,7 +33,9 @@ const nodes = [
 
 export default function ProcessStrip() {
   const [triggered, setTriggered] = useState(false);
-  const [allActive, setAllActive] = useState(false);
+  const [stripIn, setStripIn] = useState(false);
+  const [cdMuted, setCdMuted] = useState(false);
+  const [nodeActive, setNodeActive] = useState([false, false, false, false, false]);
   const [connectors, setConnectors] = useState([false, false, false, false]);
   const [labels, setLabels] = useState([false, false, false, false, false]);
   const [legendVisible, setLegendVisible] = useState(false);
@@ -47,39 +49,57 @@ export default function ProcessStrip() {
         if (entries[0].isIntersecting && !triggered) {
           setTriggered(true);
 
-          // 700ms: all nodes + connectors → active blue
-          setTimeout(() => setAllActive(true), 700);
+          // t=0: strip fades in
+          setStripIn(true);
 
-          // 1000ms: connectors reveal A-B, B-C, C-D, D-E, 200ms apart
+          // t=200: C and D appear muted
+          setTimeout(() => setCdMuted(true), 200);
+
+          // t=800: A→blue, t=900: B→blue, t=1000: E→blue
+          [0, 1, 4].forEach((idx, order) => {
+            setTimeout(() => {
+              setNodeActive((prev) => {
+                const n = [...prev];
+                n[idx] = true;
+                return n;
+              });
+            }, 800 + order * 100);
+          });
+
+          // t=1200: C and D → blue simultaneously
+          setTimeout(() => {
+            setNodeActive((prev) => {
+              const n = [...prev];
+              n[2] = true;
+              n[3] = true;
+              return n;
+            });
+          }, 1200);
+
+          // t=1450–1850: connectors A-B, B-C, C-D, D-E staggered 150ms
           [0, 1, 2, 3].forEach((i) => {
             setTimeout(() => {
               setConnectors((prev) => {
-                const next = [...prev] as [boolean, boolean, boolean, boolean];
-                next[i] = true;
-                return next;
+                const n = [...prev] as [boolean, boolean, boolean, boolean];
+                n[i] = true;
+                return n;
               });
-            }, 1000 + i * 200);
+            }, 1450 + i * 150);
           });
 
-          // 1800ms: labels fade in A→E, 80ms apart
+          // t=2100–2420: labels A→E staggered 80ms
           nodes.forEach((_, i) => {
             setTimeout(() => {
               setLabels((prev) => {
-                const next = [...prev] as [
-                  boolean,
-                  boolean,
-                  boolean,
-                  boolean,
-                  boolean,
-                ];
-                next[i] = true;
-                return next;
+                const n = [...prev] as [boolean, boolean, boolean, boolean, boolean];
+                n[i] = true;
+                return n;
               });
-            }, 1800 + i * 80);
+            }, 2100 + i * 80);
           });
 
-          // 2820ms: legend
-          setTimeout(() => setLegendVisible(true), 2820);
+          // t=2650: legend
+          setTimeout(() => setLegendVisible(true), 2650);
         }
       },
       { threshold: 0.3 }
@@ -95,6 +115,9 @@ export default function ProcessStrip() {
         background: "#F5F4F0",
         padding: "72px 0 80px",
         borderTop: "1px solid rgba(10,10,10,0.08)",
+        opacity: stripIn ? 1 : 0,
+        transform: stripIn ? "translateY(0)" : "translateY(16px)",
+        transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
       }}
     >
       <Container>
@@ -114,9 +137,10 @@ export default function ProcessStrip() {
           How We Run Campaigns
         </p>
 
-        {/* Strip — horizontally scrollable on small screens */}
-        <div style={{ overflowX: "auto", paddingBottom: "4px" }}>
+        {/* Strip */}
+        <div className="process-scroll-wrapper" style={{ overflowX: "auto", paddingBottom: "4px" }}>
           <div
+            className="process-strip"
             style={{
               display: "flex",
               alignItems: "flex-start",
@@ -125,23 +149,19 @@ export default function ProcessStrip() {
             }}
           >
             {nodes.map((node, i) => {
-              const isCOrD = i === 2 || i === 3;
-              const circleOpacity = !triggered
-                ? 0
-                : allActive
-                  ? 1
-                  : isCOrD
-                    ? 0.4
-                    : 0;
-              const isBlue = allActive;
+              const isBlue = nodeActive[i];
+              const isMuted = (i === 2 || i === 3) && cdMuted && !isBlue;
+              const circleOpacity = isBlue ? 1 : isMuted ? 0.35 : 0;
 
               return (
                 <div
                   key={node.id}
+                  className="ae-outer"
                   style={{ display: "flex", alignItems: "flex-start" }}
                 >
                   {/* Node */}
                   <div
+                    className="ae-node-wrap"
                     style={{
                       width: "96px",
                       display: "flex",
@@ -151,20 +171,18 @@ export default function ProcessStrip() {
                   >
                     {/* Circle */}
                     <div
+                      className="ae-circle"
                       style={{
                         width: "44px",
                         height: "44px",
                         borderRadius: "50%",
                         border: `1.5px solid ${isBlue ? "#1A3EFF" : "rgba(10,10,10,0.15)"}`,
-                        background: isBlue
-                          ? "rgba(26,62,255,0.05)"
-                          : "transparent",
+                        background: isBlue ? "rgba(26,62,255,0.05)" : "transparent",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         opacity: circleOpacity,
-                        transition:
-                          "opacity 300ms ease-out, border-color 400ms ease-out, background 400ms ease-out",
+                        transition: "border-color 0.3s ease, background-color 0.3s ease, opacity 0.3s ease",
                         marginBottom: "12px",
                         flexShrink: 0,
                       }}
@@ -174,63 +192,64 @@ export default function ProcessStrip() {
                           fontFamily: "var(--font-mono)",
                           fontSize: "13px",
                           color: isBlue ? "#1A3EFF" : "#888",
-                          transition: "color 400ms ease-out",
+                          transition: "color 0.3s ease",
                         }}
                       >
                         {node.id}
                       </span>
                     </div>
 
-                    {/* Title */}
-                    <p
-                      style={{
-                        fontFamily: "var(--font-grotesk)",
-                        fontWeight: 500,
-                        fontSize: "11px",
-                        textAlign: "center",
-                        maxWidth: "88px",
-                        margin: "0 0 4px",
-                        lineHeight: 1.4,
-                        opacity: labels[i] ? 1 : 0,
-                        transition: "opacity 400ms ease-out",
-                      }}
-                    >
-                      {node.title}
-                    </p>
+                    {/* Text block */}
+                    <div className="ae-text-block">
+                      <p
+                        className="ae-title"
+                        style={{
+                          fontFamily: "var(--font-grotesk)",
+                          fontWeight: 500,
+                          fontSize: "11px",
+                          textAlign: "center",
+                          maxWidth: "88px",
+                          margin: "0 0 4px",
+                          lineHeight: 1.4,
+                          opacity: labels[i] ? 1 : 0,
+                          transition: "opacity 0.3s ease",
+                        }}
+                      >
+                        {node.title}
+                      </p>
 
-                    {/* Description */}
-                    <p
-                      style={{
-                        fontFamily: "var(--font-grotesk)",
-                        fontWeight: 400,
-                        fontSize: "10px",
-                        color: "#888",
-                        textAlign: "center",
-                        maxWidth: "88px",
-                        lineHeight: 1.4,
-                        margin: 0,
-                        opacity: labels[i] ? 1 : 0,
-                        transition: "opacity 400ms ease-out",
-                      }}
-                    >
-                      {node.desc}
-                    </p>
+                      <p
+                        className="ae-desc"
+                        style={{
+                          fontFamily: "var(--font-grotesk)",
+                          fontWeight: 400,
+                          fontSize: "10px",
+                          color: "#888",
+                          textAlign: "center",
+                          maxWidth: "88px",
+                          lineHeight: 1.4,
+                          margin: 0,
+                          opacity: labels[i] ? 1 : 0,
+                          transition: "opacity 0.3s ease",
+                        }}
+                      >
+                        {node.desc}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Connector */}
                   {i < 4 && (
                     <div
+                      className="ae-connector"
                       style={{
                         width: "48px",
                         height: "2px",
-                        background: isBlue
-                          ? "#1A3EFF"
-                          : "rgba(10,10,10,0.15)",
+                        background: isBlue ? "#1A3EFF" : "rgba(10,10,10,0.15)",
                         flexShrink: 0,
                         marginTop: "21px",
                         opacity: connectors[i] ? 1 : 0,
-                        transition:
-                          "opacity 200ms ease-out, background 400ms ease-out",
+                        transition: "opacity 0.2s ease, background-color 0.3s ease",
                       }}
                     />
                   )}
@@ -242,6 +261,7 @@ export default function ProcessStrip() {
 
         {/* Legend */}
         <div
+          className="process-legend"
           style={{
             display: "flex",
             justifyContent: "center",
@@ -250,7 +270,7 @@ export default function ProcessStrip() {
             marginTop: "28px",
             flexWrap: "wrap",
             opacity: legendVisible ? 1 : 0,
-            transition: "opacity 500ms ease-out",
+            transition: "opacity 0.5s ease-out",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
