@@ -70,7 +70,8 @@ export default function Nav() {
           style={{ display: "flex", gap: "20px", alignItems: "center" }}
         >
           <NavLink href="/companies">Companies</NavLink>
-          <NavLink href="/creators">Creators</NavLink>
+          <NavLink href="/roster">Roster</NavLink>
+          <NavLink href="/apply">Applications</NavLink>
         </div>
 
         <button
@@ -136,7 +137,7 @@ export default function Nav() {
             Companies
           </Link>
           <Link
-            href="/creators"
+            href="/roster"
             onClick={() => setOpen(false)}
             style={{
               fontFamily: "var(--font-grotesk)",
@@ -145,7 +146,19 @@ export default function Nav() {
               color: "var(--bright-white)",
             }}
           >
-            Creators
+            Roster
+          </Link>
+          <Link
+            href="/apply"
+            onClick={() => setOpen(false)}
+            style={{
+              fontFamily: "var(--font-grotesk)",
+              fontWeight: 700,
+              fontSize: "28px",
+              color: "var(--bright-white)",
+            }}
+          >
+            Applications
           </Link>
         </div>
       )}

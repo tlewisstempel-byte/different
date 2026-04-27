@@ -119,6 +119,20 @@ export default function Home() {
         </p>
       </section>
 
+      {/* Roster CTA */}
+      <section
+        style={{
+          background: "var(--bright-white)",
+          padding: "40px 24px",
+          borderTop: "1px solid rgba(10,10,10,0.08)",
+          textAlign: "center",
+        }}
+      >
+        <Link href="/roster" className="btn-outline">
+          VIEW OUR ROSTER
+        </Link>
+      </section>
+
       {/* A Different Approach */}
       <section
         style={{
