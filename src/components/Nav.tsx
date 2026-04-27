@@ -67,8 +67,9 @@ export default function Nav() {
         </Link>
       </div>
 
-      <div style={{ flex: 1, textAlign: "right" }}>
-        <NavLink href="/creators">Creators</NavLink>
+      <div style={{ flex: 1, display: "flex", gap: "20px", justifyContent: "flex-end" }}>
+        <NavLink href="/roster">Roster</NavLink>
+        <NavLink href="/apply">Applications</NavLink>
       </div>
     </nav>
   );

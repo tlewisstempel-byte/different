@@ -128,6 +128,20 @@ export default function Home() {
       {/* 2. Overlap Stat Counter */}
       <OverlapStats />
 
+      {/* Roster CTA */}
+      <section
+        style={{
+          background: "var(--bright-white)",
+          padding: "40px 24px",
+          borderTop: "1px solid rgba(10,10,10,0.08)",
+          textAlign: "center",
+        }}
+      >
+        <Link href="/roster" className="btn-outline">
+          VIEW OUR ROSTER
+        </Link>
+      </section>
+
       {/* 3. A-E Process Strip */}
       <ProcessStrip />
 
@@ -192,7 +206,7 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* 5. A Different Approach — single paragraph, centred */}
+      {/* 5. A Different Approach */}
       <section
         style={{
           background: "var(--bright-white)",

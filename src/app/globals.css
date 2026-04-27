@@ -218,13 +218,13 @@ textarea::placeholder {
   list-style: none;
 }
 .card-features li::before {
-  content: '–';
+  content: '-';
   flex-shrink: 0;
   color: #888;
   margin-top: 1px;
 }
 
-/* Amendment 26: Different card — permanently highlighted */
+/* Amendment 26: Different card - permanently highlighted */
 .card-different {
   border-color: #1A3EFF;
   box-shadow: 0 0 0 1px #1A3EFF;
@@ -320,4 +320,39 @@ textarea::placeholder {
 @media (max-width: 480px) {
   .page-heading { font-size: 30px; }
   .hero-wordmark { font-size: 42px !important; }
+}
+
+.creator-photo {
+  filter: grayscale(100%);
+  transition: filter 500ms ease;
+}
+.creator-card:hover .creator-photo {
+  filter: grayscale(0%);
+}
+
+@media (max-width: 768px) {
+  .creator-card {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto auto auto;
+  }
+  .creator-card .creator-photo-panel {
+    order: 1;
+    height: 240px;
+    min-height: 240px;
+  }
+  .creator-card .creator-info-panel {
+    order: 2;
+    padding: 20px !important;
+  }
+  .creator-card .creator-stats-panel {
+    order: 3;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 0.5px solid rgba(10,10,10,0.08) !important;
+    padding: 16px 20px !important;
+    flex-direction: unset !important;
+  }
 }
