@@ -102,10 +102,10 @@ export default function Home() {
             }}
           >
             <Link href="/companies" className="btn-filled">
-              Companies
+              WORK WITH US
             </Link>
             <Link href="/roster" className="btn-outline">
-              Roster
+              VIEW ROSTER
             </Link>
           </div>
 

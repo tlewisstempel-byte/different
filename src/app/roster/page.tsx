@@ -124,12 +124,14 @@ const creators = [
 function PhotoPanel({ creator, flipped }: { creator: (typeof creators)[0]; flipped: boolean }) {
   return (
     <div className={`creator-photo-panel photo-panel${flipped ? " flipped" : ""}`}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={creator.photo}
-        alt={creator.displayName}
-        className="creator-photo"
-      />
+      <div className="photo-wrapper">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={creator.photo}
+          alt={creator.displayName}
+          className="creator-photo"
+        />
+      </div>
     </div>
   );
 }
@@ -196,6 +198,7 @@ function InfoPanel({ creator }: { creator: (typeof creators)[0] }) {
         href={creator.socialUrl}
         target="_blank"
         rel="noopener noreferrer"
+        className="card-cta"
         style={{
           display: "inline-block",
           fontFamily: "var(--font-mono)",
@@ -208,7 +211,7 @@ function InfoPanel({ creator }: { creator: (typeof creators)[0] }) {
           color: "var(--carbon)",
           padding: "10px 16px",
           alignSelf: "flex-start",
-          transition: "background 200ms ease-out, color 200ms ease-out",
+          transition: "background 300ms ease, color 300ms ease",
         }}
       >
         VIEW PRIMARY SOCIAL
@@ -218,12 +221,16 @@ function InfoPanel({ creator }: { creator: (typeof creators)[0] }) {
 }
 
 function StatBox({ label, value, isType }: { label: string; value: string; isType?: boolean }) {
+  const parts = isType ? value.split(" | ") : null;
   return (
     <div
       style={{
         border: "1px solid rgba(10,10,10,0.08)",
         borderRadius: "8px",
         padding: "14px 16px",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
       }}
     >
       <p
@@ -243,13 +250,15 @@ function StatBox({ label, value, isType }: { label: string; value: string; isTyp
         style={{
           fontFamily: "var(--font-grotesk)",
           fontWeight: isType ? 400 : 700,
-          fontSize: isType ? "13px" : "20px",
+          fontSize: isType ? "12px" : "20px",
           color: "var(--carbon)",
-          lineHeight: isType ? 1.3 : 1,
+          lineHeight: isType ? 1.4 : 1,
           margin: 0,
         }}
       >
-        {value}
+        {parts ? (
+          <>{parts[0]}<br />{parts[1]}</>
+        ) : value}
       </p>
     </div>
   );
@@ -324,8 +333,8 @@ export default function Roster() {
           <p
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "11px",
-              color: "#888",
+              fontSize: "12px",
+              color: "#444",
               textTransform: "uppercase",
               letterSpacing: "0.05em",
               margin: 0,
@@ -398,7 +407,7 @@ export default function Roster() {
               lineHeight: 1.7,
               maxWidth: "560px",
               margin: "0 auto",
-              paddingTop: "48px",
+              paddingTop: "24px",
             }}
           >
             SORSA scores are calculated from audience quality, engagement
@@ -410,11 +419,11 @@ export default function Roster() {
             style={{
               fontFamily: "var(--font-grotesk)",
               fontWeight: 400,
-              fontSize: "13px",
-              color: "#888",
+              fontSize: "14px",
+              color: "#444",
               lineHeight: 1.7,
               maxWidth: "560px",
-              margin: "16px auto 0",
+              margin: "20px auto 0",
             }}
           >
             This is a selection from our full roster. To discuss specific creators or explore the full network,{" "}
