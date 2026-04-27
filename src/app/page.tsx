@@ -104,8 +104,8 @@ export default function Home() {
             <Link href="/companies" className="btn-filled">
               Companies
             </Link>
-            <Link href="/creators" className="btn-outline">
-              Creators
+            <Link href="/roster" className="btn-outline">
+              Roster
             </Link>
           </div>
 
@@ -127,20 +127,6 @@ export default function Home() {
 
       {/* 2. Overlap Stat Counter */}
       <OverlapStats />
-
-      {/* Roster CTA */}
-      <section
-        style={{
-          background: "var(--bright-white)",
-          padding: "40px 24px",
-          borderTop: "1px solid rgba(10,10,10,0.08)",
-          textAlign: "center",
-        }}
-      >
-        <Link href="/roster" className="btn-outline">
-          VIEW OUR ROSTER
-        </Link>
-      </section>
 
       {/* 3. A-E Process Strip */}
       <ProcessStrip />

@@ -69,7 +69,7 @@ export default function Nav() {
 
       <div style={{ flex: 1, display: "flex", gap: "20px", justifyContent: "flex-end" }}>
         <NavLink href="/roster">Roster</NavLink>
-        <NavLink href="/apply">Applications</NavLink>
+        <NavLink href="/creators">Applications</NavLink>
       </div>
     </nav>
   );

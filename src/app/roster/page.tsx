@@ -1,6 +1,5 @@
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -122,32 +121,15 @@ const creators = [
   },
 ];
 
-function PhotoPanel({ creator }: { creator: (typeof creators)[0] }) {
+function PhotoPanel({ creator, flipped }: { creator: (typeof creators)[0]; flipped: boolean }) {
   return (
-    <div className="creator-photo-panel" style={{ position: "relative", minHeight: "220px" }}>
-      <Image
+    <div className={`creator-photo-panel photo-panel${flipped ? " flipped" : ""}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src={creator.photo}
         alt={creator.displayName}
-        fill
         className="creator-photo"
-        style={{ objectFit: "cover" }}
       />
-      <span
-        style={{
-          position: "absolute",
-          top: "14px",
-          left: "14px",
-          fontFamily: "var(--font-mono)",
-          fontWeight: 700,
-          fontSize: "9px",
-          color: "var(--klein-blue)",
-          textTransform: "uppercase",
-          letterSpacing: "0.08em",
-          zIndex: 1,
-        }}
-      >
-        CREATOR
-      </span>
     </div>
   );
 }
@@ -337,7 +319,7 @@ export default function Roster() {
               margin: "0 0 16px",
             }}
           >
-            A curated network of creators and culture leaders.
+            A curated network of tech influencers, combining new faces and authority figures.
           </h1>
           <p
             style={{
@@ -345,11 +327,11 @@ export default function Roster() {
               fontSize: "11px",
               color: "#888",
               textTransform: "uppercase",
-              letterSpacing: "0.1em",
+              letterSpacing: "0.05em",
               margin: 0,
             }}
           >
-            VIEW ALL CREATORS &rarr;
+            Sample of our roster &darr;
           </p>
         </div>
 
@@ -382,7 +364,7 @@ export default function Roster() {
               >
                 {isOdd ? (
                   <>
-                    <PhotoPanel creator={creator} />
+                    <PhotoPanel creator={creator} flipped={false} />
                     <InfoPanel creator={creator} />
                     <StatsPanel creator={creator} borderSide="left" />
                   </>
@@ -390,7 +372,7 @@ export default function Roster() {
                   <>
                     <StatsPanel creator={creator} borderSide="right" />
                     <InfoPanel creator={creator} />
-                    <PhotoPanel creator={creator} />
+                    <PhotoPanel creator={creator} flipped={true} />
                   </>
                 )}
               </div>
