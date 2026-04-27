@@ -406,6 +406,22 @@ export default function Roster() {
             genuine, growing account with real traction. Above 500 signals a
             highly credible audience - one that listens, engages, and acts.
           </p>
+          <p
+            style={{
+              fontFamily: "var(--font-grotesk)",
+              fontWeight: 400,
+              fontSize: "13px",
+              color: "#888",
+              lineHeight: 1.7,
+              maxWidth: "560px",
+              margin: "16px auto 0",
+            }}
+          >
+            This is a selection from our full roster. To discuss specific creators or explore the full network,{" "}
+            <Link href="/contact" className="roster-contact-link">
+              get in touch.
+            </Link>
+          </p>
         </div>
       </main>
 
