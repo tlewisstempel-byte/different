@@ -4,14 +4,14 @@ import Image from 'next/image';
 import styles from './LogoMarquee.module.css';
 
 const logos = [
-  { src: '/logos/animoca-brands.svg', alt: 'Animoca Brands', treatment: 'standard' },
-  { src: '/logos/ton.svg', alt: 'TON', treatment: 'standard' },
-  { src: '/logos/sonic.svg', alt: 'Sonic', treatment: 'standard' },
-  { src: '/logos/unagi.svg', alt: 'Unagi', treatment: 'standard' },
-  { src: '/logos/doodles.png', alt: 'Doodles', treatment: 'multiply' },
-  { src: '/logos/kudoswap.png', alt: 'Kudoswap', treatment: 'screen' },
-  { src: '/logos/edu-chain.png', alt: 'EDU Chain', treatment: 'multiply' },
-  { src: '/logos/d3.jpg', alt: 'D3', treatment: 'multiply' },
+  { src: '/animoca-brands.svg', alt: 'Animoca Brands', treatment: 'standard' },
+  { src: '/ton.svg', alt: 'TON', treatment: 'standard' },
+  { src: '/sonic.svg', alt: 'Sonic', treatment: 'standard' },
+  { src: '/unagi.svg', alt: 'Unagi', treatment: 'standard' },
+  { src: '/doodle-logo_vertical.jpg', alt: 'Doodles', treatment: 'multiply' },
+  { src: '/Kudoswap.jpg', alt: 'Kudoswap', treatment: 'screen' },
+  { src: '/EDU Chain.png', alt: 'EDU Chain', treatment: 'multiply' },
+  { src: '/D3_Black_Text_Logo.jpg', alt: 'D3', treatment: 'multiply' },
 ];
 
 export default function LogoMarquee() {

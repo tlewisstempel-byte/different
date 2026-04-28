@@ -73,7 +73,7 @@ const creators = [
     sorsaScore: "1,201",
     type: "Authority | Fun",
     socialUrl: "https://x.com/auntiepaca",
-    photo: "/creators/Auntie.png",
+    photo: "/Auntie.png",
   },
   {
     rosterNo: "#0008",
@@ -117,7 +117,7 @@ const creators = [
     sorsaScore: "529",
     type: "Motion | Trends",
     socialUrl: "https://x.com/bastien0x",
-    photo: "/creators/Bastien.jpg",
+    photo: "/Bastien.jpg",
   },
   {
     rosterNo: "#0022",
