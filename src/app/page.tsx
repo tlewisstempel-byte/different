@@ -6,6 +6,7 @@ import OverlapStats from "@/components/OverlapStats";
 import ProcessStrip from "@/components/ProcessStrip";
 import Link from "next/link";
 import ScrollArrow from "@/components/ScrollArrow";
+import LogoMarquee from "@/components/LogoMarquee";
 
 export const metadata: Metadata = {
   title: "Different | Web3 & AI Influencer Marketing",
@@ -124,6 +125,8 @@ export default function Home() {
         </Container>
         <ScrollArrow />
       </section>
+
+      <LogoMarquee />
 
       {/* 2. Overlap Stat Counter */}
       <OverlapStats />
