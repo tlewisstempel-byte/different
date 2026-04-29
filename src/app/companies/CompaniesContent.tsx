@@ -248,6 +248,111 @@ export default function CompaniesContent() {
             </div>
           </div>
 
+          {/* What's Included */}
+          <div className="deliverables-section" style={{ padding: "80px 0" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "10px",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "0.14em",
+                color: "#1A3EFF",
+                textAlign: "center",
+                marginBottom: "48px",
+              }}
+            >
+              What&apos;s Included
+            </p>
+            <div
+              className="deliverables-grid"
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(3, 1fr)",
+                gap: "32px",
+              }}
+            >
+              {[
+                {
+                  tier: "CORE",
+                  items: [
+                    { category: "CREATORS", value: "10–20 per campaign", muted: false },
+                    { category: "REPORTING", value: "Start + end of campaign", muted: false },
+                    { category: "STRATEGY DOCS", value: "Campaign brief, basic audience data", muted: false },
+                    { category: "CONTENT ASSETS", value: "Not included", muted: true },
+                  ],
+                },
+                {
+                  tier: "DIFFERENT",
+                  items: [
+                    { category: "CREATORS", value: "20–75 per campaign", muted: false },
+                    { category: "REPORTING", value: "Start, midpoint + end of campaign. Post-campaign brand lift report.", muted: false },
+                    { category: "STRATEGY DOCS", value: "Campaign brief, audience data, strategy review", muted: false },
+                    { category: "CONTENT ASSETS", value: "Not included", muted: true },
+                  ],
+                },
+                {
+                  tier: "PRO",
+                  items: [
+                    { category: "CREATORS", value: "Tailored to scope", muted: false },
+                    { category: "REPORTING", value: "Start, midpoint + end of campaign. Post-campaign brand lift report. Live updates on request.", muted: false },
+                    { category: "STRATEGY DOCS", value: "Campaign brief, audience data, strategy review, brand lift strategy review", muted: false },
+                    { category: "CONTENT ASSETS", value: "Custom assets created for creator use. Scope-dependent, developed in partnership with your marketing team.", muted: false },
+                  ],
+                },
+              ].map(({ tier, items }) => (
+                <div
+                  key={tier}
+                  style={{
+                    borderTop: "1px solid rgba(10,10,10,0.12)",
+                    paddingTop: "24px",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "11px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      color: "#0A0A0A",
+                      marginBottom: "24px",
+                    }}
+                  >
+                    {tier}
+                  </p>
+                  {items.map(({ category, value, muted }) => (
+                    <div key={category}>
+                      <p
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "9px",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          color: "#888888",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        {category}
+                      </p>
+                      <p
+                        style={{
+                          fontFamily: "var(--font-grotesk)",
+                          fontSize: "13px",
+                          color: muted ? "#AAAAAA" : "#0A0A0A",
+                          marginBottom: "20px",
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Compare packages toggle */}
           <div style={{ padding: "24px 0 0", textAlign: "center" }}>
             <button

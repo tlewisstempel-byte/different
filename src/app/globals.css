@@ -316,6 +316,8 @@ textarea::placeholder {
   .pill-group { gap: 8px; }
   .button-group { flex-wrap: wrap; }
   .page-heading { font-size: 36px; }
+  .deliverables-section { padding: 48px 24px !important; }
+  .deliverables-grid { grid-template-columns: 1fr !important; }
 }
 
 @media (max-width: 480px) {
