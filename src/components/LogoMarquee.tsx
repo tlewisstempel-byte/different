@@ -4,14 +4,13 @@ import Image from 'next/image';
 import styles from './LogoMarquee.module.css';
 
 const logos = [
-  { src: '/animoca-brands.svg', alt: 'Animoca Brands', treatment: 'standard' },
-  { src: '/ton.svg', alt: 'TON', treatment: 'standard' },
-  { src: '/sonic.svg', alt: 'Sonic', treatment: 'standard' },
-  { src: '/unagi.svg', alt: 'Unagi', treatment: 'standard' },
-  { src: '/doodle-logo_vertical.jpg', alt: 'Doodles', treatment: 'multiply' },
-  { src: '/Kudoswap.jpg', alt: 'Kudoswap', treatment: 'invert' },
-  { src: '/EDU Chain.png', alt: 'EDU Chain', treatment: 'multiply' },
-  { src: '/D3_Black_Text_Logo.jpg', alt: 'D3', treatment: 'multiply' },
+  { src: '/animoca-brands.svg', alt: 'Animoca Brands', treatment: 'standard', url: 'https://www.animocabrands.com' },
+  { src: '/ton.svg', alt: 'TON', treatment: 'standard', url: 'https://ton.org' },
+  { src: '/sonic.svg', alt: 'Sonic', treatment: 'standard', url: 'https://www.soniclabs.com' },
+  { src: '/unagi.svg', alt: 'Unagi', treatment: 'standard', url: 'https://www.unagi.games' },
+  { src: '/doodle-logo_vertical.jpg', alt: 'Doodles', treatment: 'multiply', url: 'https://doodles.app' },
+  { src: '/EDU Chain.png', alt: 'EDU Chain', treatment: 'multiply', url: 'https://opencampus.xyz' },
+  { src: '/D3_Black_Text_Logo.jpg', alt: 'D3', treatment: 'multiply', url: 'https://d3.com' },
 ];
 
 export default function LogoMarquee() {
@@ -21,8 +20,11 @@ export default function LogoMarquee() {
       <div className={styles.overflow}>
         <div className={styles.track}>
           {[...logos, ...logos].map((logo, i) => (
-            <div
+            <a
               key={i}
+              href={logo.url}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`${styles.item} ${styles[`treatment-${logo.treatment}`]}`}
             >
               <Image
@@ -33,7 +35,7 @@ export default function LogoMarquee() {
                 style={{ width: 'auto', height: '36px', maxWidth: '140px', objectFit: 'contain' }}
                 unoptimized
               />
-            </div>
+            </a>
           ))}
         </div>
       </div>

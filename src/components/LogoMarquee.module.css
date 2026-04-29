@@ -44,6 +44,8 @@
   transition: opacity 300ms ease;
   opacity: 0.45;
   filter: grayscale(100%);
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .item:first-child,
