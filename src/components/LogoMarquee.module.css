@@ -1,0 +1,39 @@
+.track {
+  display: flex;
+  width: max-content;
+  animation: scroll 32s linear infinite;
+}
+
+.track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.item {
+  height: 64px;
+  padding: 0 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.55;
+  transition: opacity 200ms ease-out;
+}
+
+.item:hover {
+  opacity: 1;
+}
+
+.treatment-invert img {
+  filter: invert(1) grayscale(1);
+  mix-blend-mode: multiply;
+}
+
+.item:hover .treatment-invert img {
+  filter: invert(0);
+  mix-blend-mode: multiply;
+}
