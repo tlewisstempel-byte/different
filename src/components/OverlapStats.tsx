@@ -142,7 +142,7 @@ export default function OverlapStats() {
               paddingLeft: "48px",
             }}
           >
-            <p style={labelStyle}>The Different Promise</p>
+            <p style={labelStyle}>Different</p>
             <div
               style={{
                 display: "flex",
