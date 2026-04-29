@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useScroll, useTransform, motion } from "framer-motion";
 import Container from "./Container";
 
 const nodes = [
@@ -32,92 +33,59 @@ const nodes = [
 ];
 
 export default function ProcessStrip() {
-  const [triggered, setTriggered] = useState(false);
-  const [stripIn, setStripIn] = useState(false);
-  const [cdMuted, setCdMuted] = useState(false);
-  const [nodeActive, setNodeActive] = useState([false, false, false, false, false]);
-  const [connectors, setConnectors] = useState([false, false, false, false]);
-  const [labels, setLabels] = useState([false, false, false, false, false]);
-  const [legendVisible, setLegendVisible] = useState(false);
-  const ref = useRef<HTMLElement>(null);
+  const sectionRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !triggered) {
-          setTriggered(true);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
-          // t=0: strip fades in
-          setStripIn(true);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: isMobile ? ["start 90%", "end 40%"] : ["start 80%", "end 60%"],
+  });
 
-          // t=200: C and D appear muted
-          setTimeout(() => setCdMuted(true), 200);
+  // Step opacities and y transforms
+  const opacityA = useTransform(scrollYProgress, [0.0, 0.12], [0, 1]);
+  const yA = useTransform(scrollYProgress, [0.0, 0.12], [16, 0]);
 
-          // t=800: A→blue, t=900: B→blue, t=1000: E→blue
-          [0, 1, 4].forEach((idx, order) => {
-            setTimeout(() => {
-              setNodeActive((prev) => {
-                const n = [...prev];
-                n[idx] = true;
-                return n;
-              });
-            }, 800 + order * 100);
-          });
+  const opacityB = useTransform(scrollYProgress, [0.22, 0.34], [0, 1]);
+  const yB = useTransform(scrollYProgress, [0.22, 0.34], [16, 0]);
 
-          // t=1200: C and D → blue simultaneously
-          setTimeout(() => {
-            setNodeActive((prev) => {
-              const n = [...prev];
-              n[2] = true;
-              n[3] = true;
-              return n;
-            });
-          }, 1200);
+  const opacityC = useTransform(scrollYProgress, [0.44, 0.56], [0, 1]);
+  const yC = useTransform(scrollYProgress, [0.44, 0.56], [16, 0]);
 
-          // t=1450–1850: connectors A-B, B-C, C-D, D-E staggered 150ms
-          [0, 1, 2, 3].forEach((i) => {
-            setTimeout(() => {
-              setConnectors((prev) => {
-                const n = [...prev] as [boolean, boolean, boolean, boolean];
-                n[i] = true;
-                return n;
-              });
-            }, 1450 + i * 150);
-          });
+  const opacityD = useTransform(scrollYProgress, [0.66, 0.78], [0, 1]);
+  const yD = useTransform(scrollYProgress, [0.66, 0.78], [16, 0]);
 
-          // t=2100–2420: labels A→E staggered 80ms
-          nodes.forEach((_, i) => {
-            setTimeout(() => {
-              setLabels((prev) => {
-                const n = [...prev] as [boolean, boolean, boolean, boolean, boolean];
-                n[i] = true;
-                return n;
-              });
-            }, 2100 + i * 80);
-          });
+  const opacityE = useTransform(scrollYProgress, [0.88, 1.0], [0, 1]);
+  const yE = useTransform(scrollYProgress, [0.88, 1.0], [16, 0]);
 
-          // t=2650: legend
-          setTimeout(() => setLegendVisible(true), 2650);
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [triggered]);
+  // Connector scale transforms
+  const scaleAB = useTransform(scrollYProgress, [0.10, 0.25], [0, 1]);
+  const scaleBC = useTransform(scrollYProgress, [0.32, 0.46], [0, 1]);
+  const scaleCD = useTransform(scrollYProgress, [0.54, 0.68], [0, 1]);
+  const scaleDE = useTransform(scrollYProgress, [0.76, 0.90], [0, 1]);
+
+  const stepMotion = [
+    { opacity: opacityA, y: yA },
+    { opacity: opacityB, y: yB },
+    { opacity: opacityC, y: yC },
+    { opacity: opacityD, y: yD },
+    { opacity: opacityE, y: yE },
+  ];
+  const connectorScales = [scaleAB, scaleBC, scaleCD, scaleDE];
 
   return (
     <section
-      ref={ref}
+      ref={sectionRef}
       style={{
         background: "#F5F4F0",
         padding: "72px 0 80px",
         borderTop: "1px solid rgba(10,10,10,0.08)",
-        opacity: stripIn ? 1 : 0,
-        transform: stripIn ? "translateY(0)" : "translateY(16px)",
-        transition: "opacity 0.4s ease-out, transform 0.4s ease-out",
       }}
     >
       <Container>
@@ -148,114 +116,104 @@ export default function ProcessStrip() {
               minWidth: "672px",
             }}
           >
-            {nodes.map((node, i) => {
-              const isBlue = nodeActive[i];
-              const isMuted = (i === 2 || i === 3) && cdMuted && !isBlue;
-              const circleOpacity = isBlue ? 1 : isMuted ? 0.35 : 0;
-
-              return (
-                <div
-                  key={node.id}
-                  className="ae-outer"
-                  style={{ display: "flex", alignItems: "flex-start" }}
+            {nodes.map((node, i) => (
+              <div
+                key={node.id}
+                className="ae-outer"
+                style={{ display: "flex", alignItems: "flex-start" }}
+              >
+                {/* Node */}
+                <motion.div
+                  className="ae-node-wrap"
+                  style={{
+                    width: "96px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    opacity: stepMotion[i].opacity,
+                    y: stepMotion[i].y,
+                  }}
                 >
-                  {/* Node */}
+                  {/* Circle */}
                   <div
-                    className="ae-node-wrap"
+                    className="ae-circle"
                     style={{
-                      width: "96px",
+                      width: "44px",
+                      height: "44px",
+                      borderRadius: "50%",
+                      border: "1.5px solid #1A3EFF",
+                      background: "rgba(26,62,255,0.05)",
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "12px",
+                      flexShrink: 0,
                     }}
                   >
-                    {/* Circle */}
-                    <div
-                      className="ae-circle"
+                    <span
                       style={{
-                        width: "44px",
-                        height: "44px",
-                        borderRadius: "50%",
-                        border: `1.5px solid ${isBlue ? "#1A3EFF" : "rgba(10,10,10,0.15)"}`,
-                        background: isBlue ? "rgba(26,62,255,0.05)" : "transparent",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        opacity: circleOpacity,
-                        transition: "border-color 0.3s ease, background-color 0.3s ease, opacity 0.3s ease",
-                        marginBottom: "12px",
-                        flexShrink: 0,
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "13px",
+                        color: "#1A3EFF",
                       }}
                     >
-                      <span
-                        style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "13px",
-                          color: isBlue ? "#1A3EFF" : "#888",
-                          transition: "color 0.3s ease",
-                        }}
-                      >
-                        {node.id}
-                      </span>
-                    </div>
-
-                    {/* Text block */}
-                    <div className="ae-text-block">
-                      <p
-                        className="ae-title"
-                        style={{
-                          fontFamily: "var(--font-grotesk)",
-                          fontWeight: 500,
-                          fontSize: "11px",
-                          textAlign: "center",
-                          maxWidth: "88px",
-                          margin: "0 0 4px",
-                          lineHeight: 1.4,
-                          opacity: labels[i] ? 1 : 0,
-                          transition: "opacity 0.3s ease",
-                        }}
-                      >
-                        {node.title}
-                      </p>
-
-                      <p
-                        className="ae-desc"
-                        style={{
-                          fontFamily: "var(--font-grotesk)",
-                          fontWeight: 400,
-                          fontSize: "10px",
-                          color: "#888",
-                          textAlign: "center",
-                          maxWidth: "88px",
-                          lineHeight: 1.4,
-                          margin: 0,
-                          opacity: labels[i] ? 1 : 0,
-                          transition: "opacity 0.3s ease",
-                        }}
-                      >
-                        {node.desc}
-                      </p>
-                    </div>
+                      {node.id}
+                    </span>
                   </div>
 
-                  {/* Connector */}
-                  {i < 4 && (
-                    <div
-                      className="ae-connector"
+                  {/* Text block */}
+                  <div className="ae-text-block">
+                    <p
+                      className="ae-title"
                       style={{
-                        width: "48px",
-                        height: "2px",
-                        background: isBlue ? "#1A3EFF" : "rgba(10,10,10,0.15)",
-                        flexShrink: 0,
-                        marginTop: "21px",
-                        opacity: connectors[i] ? 1 : 0,
-                        transition: "opacity 0.2s ease, background-color 0.3s ease",
+                        fontFamily: "var(--font-grotesk)",
+                        fontWeight: 500,
+                        fontSize: "11px",
+                        textAlign: "center",
+                        maxWidth: "88px",
+                        margin: "0 0 4px",
+                        lineHeight: 1.4,
                       }}
-                    />
-                  )}
-                </div>
-              );
-            })}
+                    >
+                      {node.title}
+                    </p>
+
+                    <p
+                      className="ae-desc"
+                      style={{
+                        fontFamily: "var(--font-grotesk)",
+                        fontWeight: 400,
+                        fontSize: "10px",
+                        color: "#888",
+                        textAlign: "center",
+                        maxWidth: "88px",
+                        lineHeight: 1.4,
+                        margin: 0,
+                      }}
+                    >
+                      {node.desc}
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* Connector */}
+                {i < 4 && (
+                  <motion.div
+                    className="ae-connector"
+                    style={{
+                      width: "48px",
+                      height: "2px",
+                      background: "#1A3EFF",
+                      flexShrink: 0,
+                      marginTop: "21px",
+                      scaleX: isMobile ? 1 : connectorScales[i],
+                      scaleY: isMobile ? connectorScales[i] : 1,
+                      transformOrigin: isMobile ? "top center" : "left center",
+                    }}
+                  />
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -269,8 +227,6 @@ export default function ProcessStrip() {
             gap: "24px",
             marginTop: "28px",
             flexWrap: "wrap",
-            opacity: legendVisible ? 1 : 0,
-            transition: "opacity 0.5s ease-out",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
