@@ -266,20 +266,25 @@ function StatBox({ label, value, isType }: { label: string; value: string; isTyp
       >
         {label}
       </p>
-      <p
-        style={{
-          fontFamily: "var(--font-grotesk)",
-          fontWeight: isType ? 400 : 700,
-          fontSize: isType ? "12px" : "20px",
-          color: "var(--carbon)",
-          lineHeight: isType ? 1.4 : 1,
-          margin: 0,
-        }}
-      >
-        {parts ? (
-          <>{parts[0]}<br />{parts[1]}</>
-        ) : value}
-      </p>
+      {parts ? (
+        <div style={{ fontFamily: "var(--font-grotesk)", fontWeight: 400 }}>
+          <span className="type-primary">{parts[0]}</span>
+          {parts[1] && <span className="type-secondary">{parts[1]}</span>}
+        </div>
+      ) : (
+        <p
+          style={{
+            fontFamily: "var(--font-grotesk)",
+            fontWeight: 700,
+            fontSize: "20px",
+            color: "var(--carbon)",
+            lineHeight: 1,
+            margin: 0,
+          }}
+        >
+          {value}
+        </p>
+      )}
     </div>
   );
 }
