@@ -392,6 +392,13 @@ export default function CompaniesContent() {
         </Container>
       </section>
 
+      {/* View Roster CTA */}
+      <section style={{ padding: "64px 0", textAlign: "center" }}>
+        <Link href="/roster" className="btn-outline">
+          VIEW ROSTER
+        </Link>
+      </section>
+
       {/* Ambassador Programme */}
       <section style={{ background: "var(--stone)", padding: "32px 0" }}>
         <Container>

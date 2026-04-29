@@ -25,6 +25,8 @@
   display: flex;
   width: max-content;
   animation: marquee 32s linear infinite;
+  animation-fill-mode: none;
+  will-change: transform;
 }
 
 .track:hover {

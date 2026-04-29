@@ -338,7 +338,7 @@ textarea::placeholder {
 }
 
 .roster-contact-link {
-  color: var(--carbon);
+  color: #1A3EFF;
   text-decoration: none;
 }
 .roster-contact-link:hover {
