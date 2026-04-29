@@ -73,6 +73,7 @@ export default function OverlapStats() {
   return (
     <section
       ref={ref}
+      className="overlap-stats-section"
       style={{
         background: "#F5F4F0",
         padding: "80px 0",

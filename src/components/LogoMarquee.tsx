@@ -9,7 +9,7 @@ const logos = [
   { src: '/sonic.svg', alt: 'Sonic', treatment: 'standard' },
   { src: '/unagi.svg', alt: 'Unagi', treatment: 'standard' },
   { src: '/doodle-logo_vertical.jpg', alt: 'Doodles', treatment: 'multiply' },
-  { src: '/Kudoswap.jpg', alt: 'Kudoswap', treatment: 'screen' },
+  { src: '/Kudoswap.jpg', alt: 'Kudoswap', treatment: 'invert' },
   { src: '/EDU Chain.png', alt: 'EDU Chain', treatment: 'multiply' },
   { src: '/D3_Black_Text_Logo.jpg', alt: 'D3', treatment: 'multiply' },
 ];
@@ -28,9 +28,9 @@ export default function LogoMarquee() {
               <Image
                 src={logo.src}
                 alt={logo.alt}
-                width={120}
-                height={40}
-                style={{ objectFit: 'contain' }}
+                width={140}
+                height={36}
+                style={{ width: 'auto', height: '36px', maxWidth: '140px', objectFit: 'contain' }}
                 unoptimized
               />
             </div>

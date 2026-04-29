@@ -291,11 +291,12 @@ textarea::placeholder {
 
 /* Fix 10: Mobile responsive */
 @media (max-width: 768px) {
+  .overlap-stats-section { padding-top: 64px !important; padding-bottom: 64px !important; }
   .stats-inner { flex-direction: column; align-items: center; gap: 40px; }
   .stat-divider { width: 40px; height: 1px; align-self: center; }
   .stat-col { padding: 0; width: 100%; text-align: center; }
   .stat-num { font-size: 64px; }
-  .stat-prefix { font-size: 28px; top: -8px; }
+  .stat-prefix { font-size: 28px; top: 0; }
   .process-scroll-wrapper { overflow-x: visible; }
   .process-strip { flex-direction: column; align-items: flex-start; min-width: unset; gap: 0; }
   .ae-outer { flex-direction: column; width: 100%; }
@@ -320,6 +321,20 @@ textarea::placeholder {
 @media (max-width: 480px) {
   .page-heading { font-size: 30px; }
   .hero-wordmark { font-size: 42px !important; }
+}
+
+.type-primary {
+  color: #0A0A0A;
+  font-size: 12px;
+  display: block;
+}
+.type-secondary {
+  color: #888888;
+  font-size: 12px;
+  display: block;
+  padding-top: 6px;
+  margin-top: 6px;
+  border-top: 1px solid rgba(10, 10, 10, 0.08);
 }
 
 .roster-contact-link {
