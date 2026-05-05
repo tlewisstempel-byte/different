@@ -2,8 +2,8 @@ import { UserProfile, Tweet, Guardian } from "./scoring";
 
 const APIFY_BASE = "https://api.apify.com/v2";
 const ACTOR_ID = "apidojo~tweet-scraper";
-const POLL_INTERVAL_MS = 3000;
-const MAX_WAIT_MS = 120_000;
+// Apify-side timeout in seconds — must be less than the Next.js maxDuration
+const APIFY_TIMEOUT_S = 240;
 
 interface ApifyTweet {
   id?: string;
@@ -30,7 +30,7 @@ interface ApifyTweet {
   reply_count?: number;
 }
 
-async function runActor(handle: string, token: string): Promise<string> {
+async function runActorSync(handle: string, token: string): Promise<ApifyTweet[]> {
   const input = {
     twitterHandles: [handle],
     maxTweets: 15,
@@ -41,45 +41,23 @@ async function runActor(handle: string, token: string): Promise<string> {
     },
   };
 
-  const res = await fetch(
-    `${APIFY_BASE}/acts/${ACTOR_ID}/runs?token=${token}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(input),
-    }
-  );
+  const url =
+    `${APIFY_BASE}/acts/${ACTOR_ID}/run-sync-get-dataset-items` +
+    `?token=${token}&timeout=${APIFY_TIMEOUT_S}&limit=15`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+    // Node fetch signal so the request doesn't outlive the Next.js function
+    signal: AbortSignal.timeout((APIFY_TIMEOUT_S + 10) * 1000),
+  });
 
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Apify run failed: ${res.status} ${text}`);
   }
 
-  const data = await res.json();
-  return data.data.id as string;
-}
-
-async function waitForRun(runId: string, token: string): Promise<void> {
-  const start = Date.now();
-  while (Date.now() - start < MAX_WAIT_MS) {
-    await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
-    const res = await fetch(`${APIFY_BASE}/actor-runs/${runId}?token=${token}`);
-    if (!res.ok) continue;
-    const data = await res.json();
-    const status: string = data.data.status;
-    if (status === "SUCCEEDED") return;
-    if (status === "FAILED" || status === "ABORTED" || status === "TIMED-OUT") {
-      throw new Error(`Apify run ${runId} ended with status: ${status}`);
-    }
-  }
-  throw new Error("Apify run timed out after 120s");
-}
-
-async function fetchDataset(runId: string, token: string): Promise<ApifyTweet[]> {
-  const res = await fetch(
-    `${APIFY_BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=15`
-  );
-  if (!res.ok) throw new Error(`Failed to fetch dataset: ${res.status}`);
   return res.json();
 }
 
@@ -101,9 +79,7 @@ export async function scrapeTwitterProfile(
   const token = process.env.APIFY_API_TOKEN;
   if (!token) throw new Error("APIFY_API_TOKEN is not set");
 
-  const runId = await runActor(handle, token);
-  await waitForRun(runId, token);
-  const items = await fetchDataset(runId, token);
+  const items = await runActorSync(handle, token);
 
   if (!items.length) throw new Error("No tweets returned for this handle");
 
