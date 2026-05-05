@@ -19,7 +19,9 @@ interface ApifyTweet {
     name?: string;
     profilePicture?: string;
     followers?: number;
+    followersCount?: number;
     following?: number;
+    followingCount?: number;
   };
   // Some actor versions use these alternative field names
   bookmark_count?: number;
@@ -30,7 +32,7 @@ interface ApifyTweet {
 
 async function runActor(handle: string, token: string): Promise<string> {
   const input = {
-    startUrls: [{ url: `https://twitter.com/${handle}` }],
+    twitterHandles: [handle],
     maxTweets: 15,
     maxRequestRetries: 2,
     proxyConfiguration: {
@@ -109,8 +111,8 @@ export async function scrapeTwitterProfile(
   const firstItem = items[0];
   const author = firstItem.author;
 
-  const followerCount = author?.followers ?? 0;
-  const followingCount = author?.following ?? 0;
+  const followerCount = author?.followers ?? author?.followersCount ?? 0;
+  const followingCount = author?.following ?? author?.followingCount ?? 0;
   const displayName = author?.name ?? handle;
   const avatarUrl = author?.profilePicture ?? "";
 
@@ -146,7 +148,7 @@ export async function scrapeTwitterProfile(
       guardianCandidates.set(userName, {
         handle: itemAuthor.userName,
         avatarUrl: itemAuthor.profilePicture ?? "",
-        followerCount: itemAuthor.followers ?? 0,
+        followerCount: itemAuthor.followers ?? itemAuthor.followersCount ?? 0,
       });
     }
   }
