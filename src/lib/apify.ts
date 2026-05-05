@@ -1,71 +1,46 @@
 import { UserProfile, Tweet, Guardian } from "./scoring";
 
-const APIFY_BASE = "https://api.apify.com/v2";
-const ACTOR_ID = "apidojo~tweet-scraper";
+const BASE = "https://api.apify.com/v2";
+const ACTOR = "apidojo~tweet-scraper";
 
-interface ApifyTweet {
-  id?: string;
-  text?: string;
-  likeCount?: number;
-  retweetCount?: number;
-  replyCount?: number;
-  bookmarkCount?: number;
-  viewCount?: number;
-  createdAt?: string;
-  author?: {
-    userName?: string;
-    name?: string;
-    profilePicture?: string;
-    followers?: number;
-    followersCount?: number;
-    following?: number;
-    followingCount?: number;
-  };
-  // Some actor versions use these alternative field names
-  bookmark_count?: number;
-  postBookmarks?: number;
-  favorite_count?: number;
-  reply_count?: number;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ApifyItem = Record<string, any>;
+
+function getNum(obj: ApifyItem, ...keys: string[]): number {
+  for (const k of keys) {
+    const v = obj?.[k];
+    if (typeof v === "number") return v;
+  }
+  return 0;
 }
 
-function normalizeBookmarks(tweet: ApifyTweet): number {
-  return tweet.bookmarkCount ?? tweet.bookmark_count ?? tweet.postBookmarks ?? 0;
-}
-
-function normalizeLikes(tweet: ApifyTweet): number {
-  return tweet.likeCount ?? tweet.favorite_count ?? 0;
-}
-
-function normalizeReplies(tweet: ApifyTweet): number {
-  return tweet.replyCount ?? tweet.reply_count ?? 0;
+function getStr(obj: ApifyItem, ...keys: string[]): string {
+  for (const k of keys) {
+    const v = obj?.[k];
+    if (typeof v === "string" && v.trim()) return v.trim();
+  }
+  return "";
 }
 
 export async function startApifyRun(handle: string): Promise<string> {
   const token = process.env.APIFY_API_TOKEN;
   if (!token) throw new Error("APIFY_API_TOKEN is not set");
 
-  const input = {
-    twitterHandles: [handle],
-    maxTweets: 15,
-    maxRequestRetries: 2,
-    timeoutSecs: 25,
-    proxyConfiguration: {
-      useApifyProxy: true,
-      apifyProxyGroups: ["DATACENTER"],
-    },
-  };
-
-  const res = await fetch(`${APIFY_BASE}/acts/${ACTOR_ID}/runs?token=${token}`, {
+  const res = await fetch(`${BASE}/acts/${ACTOR}/runs?token=${token}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
+    body: JSON.stringify({
+      startUrls: [{ url: `https://twitter.com/${handle}` }],
+      maxTweets: 15,
+      maxRequestRetries: 2,
+      timeoutSecs: 25,
+      proxyConfiguration: {
+        useApifyProxy: true,
+        apifyProxyGroups: ["DATACENTER"],
+      },
+    }),
   });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Failed to start Apify run: ${res.status} ${text}`);
-  }
-
+  if (!res.ok) throw new Error(`Apify start failed: ${res.status} ${await res.text()}`);
   const data = await res.json();
   return data.data.id as string;
 }
@@ -74,51 +49,71 @@ export type PollResult =
   | { status: "pending" }
   | { status: "done"; profile: UserProfile; guardian: Guardian | null };
 
-export async function pollApifyRun(runId: string): Promise<PollResult> {
+export async function pollApifyRun(runId: string, handle = ""): Promise<PollResult> {
   const token = process.env.APIFY_API_TOKEN;
   if (!token) throw new Error("APIFY_API_TOKEN is not set");
 
-  const statusRes = await fetch(`${APIFY_BASE}/actor-runs/${runId}?token=${token}`);
+  const statusRes = await fetch(`${BASE}/actor-runs/${runId}?token=${token}`);
   if (!statusRes.ok) throw new Error(`Failed to check run status: ${statusRes.status}`);
+  const { data } = await statusRes.json();
 
-  const statusData = await statusRes.json();
-  const runStatus: string = statusData.data.status;
-
-  if (runStatus === "FAILED" || runStatus === "ABORTED" || runStatus === "TIMED-OUT") {
-    throw new Error(`Apify run ended with status: ${runStatus}`);
+  if (["FAILED", "ABORTED", "TIMED-OUT"].includes(data.status)) {
+    throw new Error(`Apify run ended with status: ${data.status}`);
   }
-
-  if (runStatus !== "SUCCEEDED") {
+  if (data.status !== "SUCCEEDED") {
     return { status: "pending" };
   }
 
   const datasetRes = await fetch(
-    `${APIFY_BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=15`
+    `${BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=50`
   );
   if (!datasetRes.ok) throw new Error(`Failed to fetch dataset: ${datasetRes.status}`);
+  const items: ApifyItem[] = await datasetRes.json();
 
-  const items: ApifyTweet[] = await datasetRes.json();
+  if (!items.length)
+    throw new Error(`No data returned for @${handle} — check the handle and try again`);
 
-  if (!items.length) throw new Error("No tweets returned for this handle");
+  console.log(`[apify] ${items.length} items for @${handle}`);
+  console.log(`[apify] first item keys:`, Object.keys(items[0] ?? {}).join(", "));
+  console.log(`[apify] first item (truncated):`, JSON.stringify(items[0]).slice(0, 600));
 
-  const firstItem = items[0];
-  const author = firstItem.author;
+  // startUrls points at the user's profile, so every item belongs to them — no filtering.
+  const first = items[0];
+  const authorObj = first?.author ?? first?.user ?? first?.userData ?? {};
 
-  const followerCount = author?.followers ?? author?.followersCount ?? 0;
-  const followingCount = author?.following ?? author?.followingCount ?? 0;
-  const displayName = author?.name ?? author?.userName ?? "";
-  const avatarUrl = author?.profilePicture ?? "";
-  const handle = author?.userName ?? "";
+  const displayName =
+    getStr(authorObj, "name", "displayName", "full_name") ||
+    getStr(first, "authorName", "displayName", "name") ||
+    handle;
+
+  const avatarUrl =
+    getStr(authorObj, "profilePicture", "profile_image_url", "profile_image_url_https", "avatar") ||
+    getStr(first, "authorProfilePicture", "profilePicture", "avatarUrl") ||
+    "";
+
+  const followerCount =
+    getNum(authorObj, "followers", "followers_count", "followersCount") ||
+    getNum(first, "authorFollowers", "followers", "followersCount");
+
+  const followingCount =
+    getNum(authorObj, "following", "friends_count", "followingCount") ||
+    getNum(first, "authorFollowing", "following", "followingCount");
 
   const tweets: Tweet[] = items.slice(0, 10).map((item) => ({
-    likeCount: normalizeLikes(item),
-    replyCount: normalizeReplies(item),
-    bookmarkCount: normalizeBookmarks(item),
-    createdAt: item.createdAt ?? new Date().toISOString(),
+    likeCount: getNum(item, "likeCount", "favorite_count", "likes", "favouriteCount"),
+    replyCount: getNum(item, "replyCount", "reply_count", "replies"),
+    bookmarkCount: getNum(item, "bookmarkCount", "bookmark_count", "bookmarks", "postBookmarks"),
+    createdAt: getStr(item, "createdAt", "created_at", "timestamp") || new Date().toISOString(),
   }));
 
+  const resolvedHandle =
+    handle ||
+    getStr(authorObj, "userName", "username") ||
+    getStr(first, "authorUserName", "userName", "username") ||
+    "";
+
   const profile: UserProfile = {
-    handle,
+    handle: resolvedHandle,
     displayName,
     avatarUrl,
     followerCount,
@@ -126,32 +121,9 @@ export async function pollApifyRun(runId: string): Promise<PollResult> {
     tweets,
   };
 
-  const guardianCandidates = new Map<
-    string,
-    { handle: string; avatarUrl: string; followerCount: number }
-  >();
-
-  for (const item of items) {
-    const itemAuthor = item.author;
-    if (!itemAuthor?.userName) continue;
-    const userName = itemAuthor.userName.toLowerCase();
-    if (userName === handle.toLowerCase()) continue;
-    if (!guardianCandidates.has(userName)) {
-      guardianCandidates.set(userName, {
-        handle: itemAuthor.userName,
-        avatarUrl: itemAuthor.profilePicture ?? "",
-        followerCount: itemAuthor.followers ?? itemAuthor.followersCount ?? 0,
-      });
-    }
-  }
-
-  let guardian: Guardian | null = null;
-  if (guardianCandidates.size > 0) {
-    const best = Array.from(guardianCandidates.values()).sort(
-      (a, b) => b.followerCount - a.followerCount
-    )[0];
-    guardian = best;
-  }
+  // Guardian requires a separate replies search; omitted here.
+  // The card renders "No guardian found. You're out here alone." when null.
+  const guardian: Guardian | null = null;
 
   return { status: "done", profile, guardian };
 }

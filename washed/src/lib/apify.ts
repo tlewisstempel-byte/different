@@ -3,29 +3,24 @@ import { UserProfile, Tweet, Guardian } from "./scoring";
 const BASE = "https://api.apify.com/v2";
 const ACTOR = "apidojo~tweet-scraper";
 
-interface ApifyTweet {
-  likeCount?: number;
-  favorite_count?: number;
-  replyCount?: number;
-  reply_count?: number;
-  bookmarkCount?: number;
-  bookmark_count?: number;
-  postBookmarks?: number;
-  createdAt?: string;
-  author?: {
-    userName?: string;
-    name?: string;
-    profilePicture?: string;
-    followers?: number;
-    followersCount?: number;
-    following?: number;
-    followingCount?: number;
-  };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ApifyItem = Record<string, any>;
+
+function getNum(obj: ApifyItem, ...keys: string[]): number {
+  for (const k of keys) {
+    const v = obj?.[k];
+    if (typeof v === "number") return v;
+  }
+  return 0;
 }
 
-function books(t: ApifyTweet) { return t.bookmarkCount ?? t.bookmark_count ?? t.postBookmarks ?? 0; }
-function likes(t: ApifyTweet) { return t.likeCount ?? t.favorite_count ?? 0; }
-function replies(t: ApifyTweet) { return t.replyCount ?? t.reply_count ?? 0; }
+function getStr(obj: ApifyItem, ...keys: string[]): string {
+  for (const k of keys) {
+    const v = obj?.[k];
+    if (typeof v === "string" && v.trim()) return v.trim();
+  }
+  return "";
+}
 
 export async function startApifyRun(handle: string): Promise<string> {
   const token = process.env.APIFY_API_TOKEN;
@@ -35,7 +30,7 @@ export async function startApifyRun(handle: string): Promise<string> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      twitterHandles: [handle],
+      startUrls: [{ url: `https://twitter.com/${handle}` }],
       maxTweets: 15,
       maxRequestRetries: 2,
       timeoutSecs: 25,
@@ -54,7 +49,7 @@ export type PollResult =
   | { status: "pending" }
   | { status: "done"; profile: UserProfile; guardian: Guardian | null };
 
-export async function pollApifyRun(runId: string): Promise<PollResult> {
+export async function pollApifyRun(runId: string, handle = ""): Promise<PollResult> {
   const token = process.env.APIFY_API_TOKEN;
   if (!token) throw new Error("APIFY_API_TOKEN is not configured");
 
@@ -70,52 +65,65 @@ export async function pollApifyRun(runId: string): Promise<PollResult> {
   }
 
   const datasetRes = await fetch(
-    `${BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=15`
+    `${BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=50`
   );
   if (!datasetRes.ok) throw new Error(`Dataset fetch failed: ${datasetRes.status}`);
-  const items: ApifyTweet[] = await datasetRes.json();
+  const items: ApifyItem[] = await datasetRes.json();
 
-  if (!items.length) throw new Error("No data returned — check the handle and try again");
+  if (!items.length)
+    throw new Error(`No data returned for @${handle} — check the handle and try again`);
 
+  console.log(`[apify] ${items.length} items for @${handle}`);
+  console.log(`[apify] first item keys:`, Object.keys(items[0] ?? {}).join(", "));
+  console.log(`[apify] first item (truncated):`, JSON.stringify(items[0]).slice(0, 600));
+
+  // startUrls points at the user's profile — every item belongs to them, no filtering.
   const first = items[0];
-  const author = first.author;
-  const handle = author?.userName ?? "";
+  const authorObj = first?.author ?? first?.user ?? first?.userData ?? {};
+
+  const resolvedHandle =
+    handle ||
+    getStr(authorObj, "userName", "username") ||
+    getStr(first, "authorUserName", "userName", "username") ||
+    "";
+
+  const displayName =
+    getStr(authorObj, "name", "displayName", "full_name") ||
+    getStr(first, "authorName", "displayName", "name") ||
+    resolvedHandle;
+
+  const avatarUrl =
+    getStr(authorObj, "profilePicture", "profile_image_url", "profile_image_url_https", "avatar") ||
+    getStr(first, "authorProfilePicture", "profilePicture", "avatarUrl") ||
+    "";
+
+  const followerCount =
+    getNum(authorObj, "followers", "followers_count", "followersCount") ||
+    getNum(first, "authorFollowers", "followers", "followersCount");
+
+  const followingCount =
+    getNum(authorObj, "following", "friends_count", "followingCount") ||
+    getNum(first, "authorFollowing", "following", "followingCount");
 
   const tweets: Tweet[] = items.slice(0, 10).map((item) => ({
-    likeCount: likes(item),
-    replyCount: replies(item),
-    bookmarkCount: books(item),
-    createdAt: item.createdAt ?? new Date().toISOString(),
+    likeCount: getNum(item, "likeCount", "favorite_count", "likes", "favouriteCount"),
+    replyCount: getNum(item, "replyCount", "reply_count", "replies"),
+    bookmarkCount: getNum(item, "bookmarkCount", "bookmark_count", "bookmarks", "postBookmarks"),
+    createdAt: getStr(item, "createdAt", "created_at", "timestamp") || new Date().toISOString(),
   }));
 
   const profile: UserProfile = {
-    handle,
-    displayName: author?.name ?? handle,
-    avatarUrl: author?.profilePicture ?? "",
-    followerCount: author?.followers ?? author?.followersCount ?? 0,
-    followingCount: author?.following ?? author?.followingCount ?? 0,
+    handle: resolvedHandle,
+    displayName,
+    avatarUrl,
+    followerCount,
+    followingCount,
     tweets,
   };
 
-  const candidates = new Map<string, Guardian>();
-  for (const item of items) {
-    const a = item.author;
-    if (!a?.userName) continue;
-    const key = a.userName.toLowerCase();
-    if (key === handle.toLowerCase()) continue;
-    if (!candidates.has(key)) {
-      candidates.set(key, {
-        handle: a.userName,
-        avatarUrl: a.profilePicture ?? "",
-        followerCount: a.followers ?? a.followersCount ?? 0,
-      });
-    }
-  }
-
-  const guardian =
-    candidates.size > 0
-      ? [...candidates.values()].sort((a, b) => b.followerCount - a.followerCount)[0]
-      : null;
+  // Guardian requires a separate replies search; omitted here.
+  // The card renders "No guardian found. You're out here alone." when null.
+  const guardian: Guardian | null = null;
 
   return { status: "done", profile, guardian };
 }
