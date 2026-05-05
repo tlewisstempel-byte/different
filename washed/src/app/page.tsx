@@ -28,15 +28,30 @@ export default function Home() {
     setResult(null);
     setError("");
     try {
-      const res = await fetch("/api/score", {
+      const startRes = await fetch("/api/score/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ handle: h }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Request failed");
-      setResult(data as ScoreResult);
-      setPhase("done");
+      const startData = await startRes.json();
+      if (!startRes.ok) throw new Error(startData.error ?? "Failed to start");
+      const { runId } = startData as { runId: string };
+
+      const deadline = Date.now() + 30_000;
+      while (Date.now() < deadline) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const pollRes = await fetch(`/api/score/poll/${runId}`);
+        const pollData = await pollRes.json();
+        if (!pollRes.ok) throw new Error(pollData.error ?? "Poll failed");
+        if (pollData.status !== "pending") {
+          setResult(pollData as ScoreResult);
+          setPhase("done");
+          return;
+        }
+      }
+
+      setError("COULDN'T SCORE THIS ACCOUNT. TRY AGAIN.");
+      setPhase("error");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
       setPhase("error");

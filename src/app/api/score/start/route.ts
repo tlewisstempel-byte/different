@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { scrapeTwitterProfile } from "@/lib/apify";
-import { calculateScore } from "@/lib/scoring";
+import { startApifyRun } from "@/lib/apify";
 
-export const maxDuration = 300;
+export const maxDuration = 10;
 
 export async function POST(req: NextRequest) {
   try {
@@ -13,10 +12,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "handle is required" }, { status: 400 });
     }
 
-    const { profile, guardian } = await scrapeTwitterProfile(handle);
-    const result = calculateScore(profile, guardian);
-
-    return NextResponse.json(result);
+    const runId = await startApifyRun(handle);
+    return NextResponse.json({ runId });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
     return NextResponse.json({ error: message }, { status: 500 });

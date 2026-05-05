@@ -2,8 +2,6 @@ import { UserProfile, Tweet, Guardian } from "./scoring";
 
 const APIFY_BASE = "https://api.apify.com/v2";
 const ACTOR_ID = "apidojo~tweet-scraper";
-// Apify-side timeout in seconds — must be less than the Next.js maxDuration
-const APIFY_TIMEOUT_S = 240;
 
 interface ApifyTweet {
   id?: string;
@@ -30,37 +28,6 @@ interface ApifyTweet {
   reply_count?: number;
 }
 
-async function runActorSync(handle: string, token: string): Promise<ApifyTweet[]> {
-  const input = {
-    twitterHandles: [handle],
-    maxTweets: 15,
-    maxRequestRetries: 2,
-    proxyConfiguration: {
-      useApifyProxy: true,
-      apifyProxyGroups: ["DATACENTER"],
-    },
-  };
-
-  const url =
-    `${APIFY_BASE}/acts/${ACTOR_ID}/run-sync-get-dataset-items` +
-    `?token=${token}&timeout=${APIFY_TIMEOUT_S}&limit=15`;
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
-    // Node fetch signal so the request doesn't outlive the Next.js function
-    signal: AbortSignal.timeout((APIFY_TIMEOUT_S + 10) * 1000),
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Apify run failed: ${res.status} ${text}`);
-  }
-
-  return res.json();
-}
-
 function normalizeBookmarks(tweet: ApifyTweet): number {
   return tweet.bookmarkCount ?? tweet.bookmark_count ?? tweet.postBookmarks ?? 0;
 }
@@ -73,24 +40,75 @@ function normalizeReplies(tweet: ApifyTweet): number {
   return tweet.replyCount ?? tweet.reply_count ?? 0;
 }
 
-export async function scrapeTwitterProfile(
-  handle: string
-): Promise<{ profile: UserProfile; guardian: Guardian | null }> {
+export async function startApifyRun(handle: string): Promise<string> {
   const token = process.env.APIFY_API_TOKEN;
   if (!token) throw new Error("APIFY_API_TOKEN is not set");
 
-  const items = await runActorSync(handle, token);
+  const input = {
+    twitterHandles: [handle],
+    maxTweets: 15,
+    maxRequestRetries: 2,
+    timeoutSecs: 25,
+    proxyConfiguration: {
+      useApifyProxy: true,
+      apifyProxyGroups: ["DATACENTER"],
+    },
+  };
+
+  const res = await fetch(`${APIFY_BASE}/acts/${ACTOR_ID}/runs?token=${token}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`Failed to start Apify run: ${res.status} ${text}`);
+  }
+
+  const data = await res.json();
+  return data.data.id as string;
+}
+
+export type PollResult =
+  | { status: "pending" }
+  | { status: "done"; profile: UserProfile; guardian: Guardian | null };
+
+export async function pollApifyRun(runId: string): Promise<PollResult> {
+  const token = process.env.APIFY_API_TOKEN;
+  if (!token) throw new Error("APIFY_API_TOKEN is not set");
+
+  const statusRes = await fetch(`${APIFY_BASE}/actor-runs/${runId}?token=${token}`);
+  if (!statusRes.ok) throw new Error(`Failed to check run status: ${statusRes.status}`);
+
+  const statusData = await statusRes.json();
+  const runStatus: string = statusData.data.status;
+
+  if (runStatus === "FAILED" || runStatus === "ABORTED" || runStatus === "TIMED-OUT") {
+    throw new Error(`Apify run ended with status: ${runStatus}`);
+  }
+
+  if (runStatus !== "SUCCEEDED") {
+    return { status: "pending" };
+  }
+
+  const datasetRes = await fetch(
+    `${APIFY_BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=15`
+  );
+  if (!datasetRes.ok) throw new Error(`Failed to fetch dataset: ${datasetRes.status}`);
+
+  const items: ApifyTweet[] = await datasetRes.json();
 
   if (!items.length) throw new Error("No tweets returned for this handle");
 
-  // The first item typically contains the author profile
   const firstItem = items[0];
   const author = firstItem.author;
 
   const followerCount = author?.followers ?? author?.followersCount ?? 0;
   const followingCount = author?.following ?? author?.followingCount ?? 0;
-  const displayName = author?.name ?? handle;
+  const displayName = author?.name ?? author?.userName ?? "";
   const avatarUrl = author?.profilePicture ?? "";
+  const handle = author?.userName ?? "";
 
   const tweets: Tweet[] = items.slice(0, 10).map((item) => ({
     likeCount: normalizeLikes(item),
@@ -108,8 +126,6 @@ export async function scrapeTwitterProfile(
     tweets,
   };
 
-  // Guardian: highest-follower author among reply authors in the dataset
-  // The tweet scraper may include some reply tweets where author differs
   const guardianCandidates = new Map<
     string,
     { handle: string; avatarUrl: string; followerCount: number }
@@ -137,5 +153,5 @@ export async function scrapeTwitterProfile(
     guardian = best;
   }
 
-  return { profile, guardian };
+  return { status: "done", profile, guardian };
 }

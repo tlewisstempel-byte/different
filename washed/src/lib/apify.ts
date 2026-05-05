@@ -2,8 +2,6 @@ import { UserProfile, Tweet, Guardian } from "./scoring";
 
 const BASE = "https://api.apify.com/v2";
 const ACTOR = "apidojo~tweet-scraper";
-const POLL_MS = 3000;
-const MAX_MS = 120_000;
 
 interface ApifyTweet {
   likeCount?: number;
@@ -19,18 +17,28 @@ interface ApifyTweet {
     name?: string;
     profilePicture?: string;
     followers?: number;
+    followersCount?: number;
     following?: number;
+    followingCount?: number;
   };
 }
 
-async function startRun(handle: string, token: string): Promise<string> {
+function books(t: ApifyTweet) { return t.bookmarkCount ?? t.bookmark_count ?? t.postBookmarks ?? 0; }
+function likes(t: ApifyTweet) { return t.likeCount ?? t.favorite_count ?? 0; }
+function replies(t: ApifyTweet) { return t.replyCount ?? t.reply_count ?? 0; }
+
+export async function startApifyRun(handle: string): Promise<string> {
+  const token = process.env.APIFY_API_TOKEN;
+  if (!token) throw new Error("APIFY_API_TOKEN is not configured");
+
   const res = await fetch(`${BASE}/acts/${ACTOR}/runs?token=${token}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      startUrls: [{ url: `https://twitter.com/${handle}` }],
+      twitterHandles: [handle],
       maxTweets: 15,
       maxRequestRetries: 2,
+      timeoutSecs: 25,
       proxyConfiguration: {
         useApifyProxy: true,
         apifyProxyGroups: ["DATACENTER"],
@@ -42,46 +50,36 @@ async function startRun(handle: string, token: string): Promise<string> {
   return data.data.id as string;
 }
 
-async function waitForRun(runId: string, token: string): Promise<void> {
-  const deadline = Date.now() + MAX_MS;
-  while (Date.now() < deadline) {
-    await new Promise((r) => setTimeout(r, POLL_MS));
-    const res = await fetch(`${BASE}/actor-runs/${runId}?token=${token}`);
-    if (!res.ok) continue;
-    const { data } = await res.json();
-    if (data.status === "SUCCEEDED") return;
-    if (["FAILED", "ABORTED", "TIMED-OUT"].includes(data.status))
-      throw new Error(`Apify run ended: ${data.status}`);
-  }
-  throw new Error("Apify run timed out");
-}
+export type PollResult =
+  | { status: "pending" }
+  | { status: "done"; profile: UserProfile; guardian: Guardian | null };
 
-async function getItems(runId: string, token: string): Promise<ApifyTweet[]> {
-  const res = await fetch(
-    `${BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=15`
-  );
-  if (!res.ok) throw new Error(`Dataset fetch failed: ${res.status}`);
-  return res.json();
-}
-
-function books(t: ApifyTweet) { return t.bookmarkCount ?? t.bookmark_count ?? t.postBookmarks ?? 0; }
-function likes(t: ApifyTweet) { return t.likeCount ?? t.favorite_count ?? 0; }
-function replies(t: ApifyTweet) { return t.replyCount ?? t.reply_count ?? 0; }
-
-export async function scrapeProfile(
-  handle: string
-): Promise<{ profile: UserProfile; guardian: Guardian | null }> {
+export async function pollApifyRun(runId: string): Promise<PollResult> {
   const token = process.env.APIFY_API_TOKEN;
   if (!token) throw new Error("APIFY_API_TOKEN is not configured");
 
-  const runId = await startRun(handle, token);
-  await waitForRun(runId, token);
-  const items = await getItems(runId, token);
+  const statusRes = await fetch(`${BASE}/actor-runs/${runId}?token=${token}`);
+  if (!statusRes.ok) throw new Error(`Status check failed: ${statusRes.status}`);
+  const { data } = await statusRes.json();
 
-  if (!items.length) throw new Error(`No data returned for @${handle} — check the handle and try again`);
+  if (["FAILED", "ABORTED", "TIMED-OUT"].includes(data.status)) {
+    throw new Error(`Apify run ended: ${data.status}`);
+  }
+  if (data.status !== "SUCCEEDED") {
+    return { status: "pending" };
+  }
+
+  const datasetRes = await fetch(
+    `${BASE}/actor-runs/${runId}/dataset/items?token=${token}&limit=15`
+  );
+  if (!datasetRes.ok) throw new Error(`Dataset fetch failed: ${datasetRes.status}`);
+  const items: ApifyTweet[] = await datasetRes.json();
+
+  if (!items.length) throw new Error("No data returned — check the handle and try again");
 
   const first = items[0];
   const author = first.author;
+  const handle = author?.userName ?? "";
 
   const tweets: Tweet[] = items.slice(0, 10).map((item) => ({
     likeCount: likes(item),
@@ -94,8 +92,8 @@ export async function scrapeProfile(
     handle,
     displayName: author?.name ?? handle,
     avatarUrl: author?.profilePicture ?? "",
-    followerCount: author?.followers ?? 0,
-    followingCount: author?.following ?? 0,
+    followerCount: author?.followers ?? author?.followersCount ?? 0,
+    followingCount: author?.following ?? author?.followingCount ?? 0,
     tweets,
   };
 
@@ -109,7 +107,7 @@ export async function scrapeProfile(
       candidates.set(key, {
         handle: a.userName,
         avatarUrl: a.profilePicture ?? "",
-        followerCount: a.followers ?? 0,
+        followerCount: a.followers ?? a.followersCount ?? 0,
       });
     }
   }
@@ -119,5 +117,5 @@ export async function scrapeProfile(
       ? [...candidates.values()].sort((a, b) => b.followerCount - a.followerCount)[0]
       : null;
 
-  return { profile, guardian };
+  return { status: "done", profile, guardian };
 }

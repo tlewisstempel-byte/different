@@ -25,15 +25,30 @@ export default function WashedPage() {
     setErrorMsg("");
 
     try {
-      const res = await fetch("/api/score", {
+      const startRes = await fetch("/api/score/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ handle: trimmed }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? "Something went wrong");
-      setResult(data as ScoreResult);
-      setState("done");
+      const startData = await startRes.json();
+      if (!startRes.ok) throw new Error(startData.error ?? "Failed to start");
+      const { runId } = startData as { runId: string };
+
+      const deadline = Date.now() + 30_000;
+      while (Date.now() < deadline) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const pollRes = await fetch(`/api/score/poll/${runId}`);
+        const pollData = await pollRes.json();
+        if (!pollRes.ok) throw new Error(pollData.error ?? "Poll failed");
+        if (pollData.status !== "pending") {
+          setResult(pollData as ScoreResult);
+          setState("done");
+          return;
+        }
+      }
+
+      setErrorMsg("COULDN'T SCORE THIS ACCOUNT. TRY AGAIN.");
+      setState("error");
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Unknown error");
       setState("error");
